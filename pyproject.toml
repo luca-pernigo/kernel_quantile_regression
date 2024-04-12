@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling","cvxopt","matplotlib","numpy","pandas","scipy","scikit-learn","tqdm"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "kernel_quantile_regression"
+version = "0.0.1"
+authors = [
+  { name="Luca Pernigo", email="luca.pernigo@usi.ch" },
+]
+description = "Kernel quantile regression"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+

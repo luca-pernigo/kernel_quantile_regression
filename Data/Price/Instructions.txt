@@ -1,0 +1,3 @@
+Data Description
+
+The target variable is hourly locational marginal price. The independent variables are zonal load and system load.
