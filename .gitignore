@@ -7,3 +7,4 @@
 
 # ignore pycache
 utils/__pycache__
+plots/__pycache__
