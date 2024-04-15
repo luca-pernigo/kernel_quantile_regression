@@ -68,7 +68,9 @@ def test(ith):
 
     # plot
     price_plot_ci(reo, y_test)
-    plt.show()
+    plt.title(f"Task {ith}")
+    plt.savefig(f"plots/Price/price_task_{ith}.png")
+    # plt.show()
 
     ans=pinball_tot/len(quantiles)
     print("total quantile: ", ans)

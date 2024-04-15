@@ -66,6 +66,8 @@ def test(ith):
 
     # plot
     load_plot_ci(reo, y_test)
+    plt.title(f"Task {ith}")
+    # plt.savefig(f"plots/Load/load_task_{ith}.png")
     plt.show()
 
 
