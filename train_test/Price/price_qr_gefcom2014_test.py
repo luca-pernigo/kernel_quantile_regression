@@ -1,6 +1,9 @@
+import matplotlib.pyplot as plt
 
 import pandas as pd
 import pickle
+
+import os
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_pinball_loss
@@ -8,13 +11,13 @@ from sklearn.preprocessing import StandardScaler
 import sys
 
 from tqdm import tqdm
-import os
 
 wd = os.path.dirname(os.path.abspath(__file__))
 project_directory = os.path.abspath(os.path.join(wd, '..', '..'))
 sys.path.append(project_directory)
 
 from utils import miscellaneous
+from plots.plot_ci import price_plot_ci
 
 def test(ith):
 
@@ -50,15 +53,22 @@ def test(ith):
         df_predict[f"{q}"]=pd.Series(y_predict_q)
 
     # reorder quantiles
-    res=miscellaneous.order_quantiles(df_predict)
+    reo=miscellaneous.order_quantiles(df_predict)
+
+    # save predictions to csv
+    reo.to_csv(f"Data/Price/Task {ith}/L{ith}-model_prediction.csv", index=False)
 
     # compute pinball loss
     pinball_tot=0
     for i,q in enumerate(quantiles):
-        predict=res.iloc[:,i]
+        predict=reo.loc[:,f"{q}"]
         pinball_q=mean_pinball_loss(y_test,predict, alpha=q)
         print(f"pinball loss quantile {q}: ", pinball_q)
         pinball_tot+=pinball_q
+
+    # plot
+    price_plot_ci(reo, y_test)
+    plt.show()
 
     ans=pinball_tot/len(quantiles)
     print("total quantile: ", ans)

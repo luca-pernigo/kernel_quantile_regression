@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 
 import pandas as pd
 import pickle
@@ -16,6 +17,7 @@ project_directory = os.path.abspath(os.path.join(wd, '..', '..'))
 sys.path.append(project_directory)
 
 from utils import miscellaneous
+from plots.plot_ci import load_plot_ci
 
 
 
@@ -61,6 +63,11 @@ def test(ith):
         pinball_q=mean_pinball_loss(y_test,y_predict_q, alpha=q)
         print(f"pinball loss quantile {q}: ", pinball_q)
         pinball_tot+=pinball_q
+
+    # plot
+    load_plot_ci(reo, y_test)
+    plt.show()
+
 
     ans=pinball_tot/len(quantiles)
     print("total quantile: ", ans)
