@@ -17,6 +17,7 @@ def load_plot_ci(df, y):
     # label ticks
     labels=[int(i/24) for i in tick_array]
     
+    plt.figure(figsize=(15,5))
     # plot quantile range
     plt.plot(y,color="black")
     
@@ -38,7 +39,7 @@ def price_plot_ci(df, y):
     # dummy x for plotting
     x=np.arange(len(y))
     # ticks for the days, (including also hours adds clutter)
-    tick_array = [i for i in range(1,24+1)]
+    tick_array = [i for i in range(0,23+1)]
     
     # plot quantile range
     plt.plot(y,color="black")
