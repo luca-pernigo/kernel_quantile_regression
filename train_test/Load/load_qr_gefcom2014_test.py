@@ -49,13 +49,16 @@ def test(ith):
         df_predict[f"{q}"]=pd.Series(y_predict_q)
 
     # reorder quantiles
-    res=miscellaneous.order_quantiles(df_predict)
+    reo=miscellaneous.order_quantiles(df_predict)
+
+    # save predictions to csv
+    reo.to_csv(f"Data/Load/Task {ith}/L{ith}-model_prediction.csv", index=False)
 
     # compute pinball loss
     pinball_tot=0
     for i,q in enumerate(quantiles):
-        predict=res.iloc[:,i]
-        pinball_q=mean_pinball_loss(y_test,predict, alpha=q)
+        y_predict_q=reo.loc[:,f"{q}"]
+        pinball_q=mean_pinball_loss(y_test,y_predict_q, alpha=q)
         print(f"pinball loss quantile {q}: ", pinball_q)
         pinball_tot+=pinball_q
 

@@ -55,9 +55,19 @@ def get_test(file):
 
 
 def order_quantiles(df):
+    # get 99 quantiles data only
     a = df[[f"{i/100}" for i in range(1,100)]].values
+    # get additional columns that do not have to be sorted
+    add_cols=df.columns.difference([f"{i/100}" for i in range(1,100)])
+    
     a.sort(axis=1)
-    res=pd.DataFrame(a, df.index)
+    # create df
+    res=pd.DataFrame(a, df.index, columns=[f"{i/100}" for i in range(1,100)])
+
+    res[add_cols]=df[add_cols]
+    # reorder cols
+    res=order_columns(res, add_cols.values.tolist()+[f"{i/100}" for i in range(1,100)])
+    
     return res
 
 
