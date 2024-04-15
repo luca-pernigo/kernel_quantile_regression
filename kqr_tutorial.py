@@ -66,6 +66,7 @@ if __name__=="__main__":
         plt.plot(X_test,y_test_pred_qr[i], alpha=0.84, label=f"q={quantiles[i]}", linestyle="dashed")
     plt.legend()
     plt.title("Linear quantile regression")
+    plt.savefig("plots/melbourne_linear_quantile_regression.png")
     plt.show()
     
     # gbm quantile regressor
@@ -115,6 +116,7 @@ if __name__=="__main__":
         plt.plot(eval_set,qr_gbr_models[i].predict(eval_set), alpha=0.84, label=f"q={quantiles[i]}", linestyle="dashed")
     plt.legend()
     plt.title("Gradient boosting quantile regression")
+    plt.savefig("plots/melbourne_gradient_boosting_quantile_regression.png")
     plt.show()
 
 
@@ -156,6 +158,7 @@ if __name__=="__main__":
         plt.plot(eval_set,qr_rfr_models[i].predict(eval_set), alpha=0.84, label=f"q={quantiles[i]}", linestyle="dashed")
     plt.legend()
     plt.title("Quantile forest")
+    plt.savefig("plots/melbourne_quantile_forest.png")
     plt.show()
 
 
@@ -193,6 +196,7 @@ if __name__=="__main__":
         plt.plot(eval_set,qr_krn_models[i].predict(eval_set), alpha=0.84, label=f"q={quantiles[i]}", linestyle="dashed")
     plt.legend()
     plt.title("Kernel qr")
+    plt.savefig("plots/melborune_kernel_quantile_regression.png")
     plt.show()
 
 
