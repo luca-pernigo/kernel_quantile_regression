@@ -16,6 +16,7 @@ pip install kernel-quantile-regression
 from kernel_quantile_regression.kqr import KQR
 
 # create model instance
+# specify your quantile q and hyperparameters C and gamma
 kqr_1=KQR(alpha=q, C=100, gamma=0.5)
 
 # train model
