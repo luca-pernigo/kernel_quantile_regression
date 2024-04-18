@@ -38,8 +38,8 @@ Plots for the tutorial and experiments.
 Source code.
 
 - train_test
-    scripts to train the models, saved and test them.
-    - models
+scripts to train the models, saved and test them.
+    * models
     contains , for each quantile, the pickled trained models.
 
 
