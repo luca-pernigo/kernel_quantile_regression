@@ -28,8 +28,26 @@ kqr_1.fit(X_train, y_train)
 kqr_1.predict(X_test)
 ```
 ## Repo files
+- Data/
 The Data directory contains the raw files for the GEFCom2014 challenge [[3]](#3), data can be accessed from Dr. Tao Hong blog http://blog.drhongtao.com/2017/03/gefcom2014-load-forecasting-data.html. The Data folder contains also the transformed raw data, those constitute the input for our probabilistic forecasting study.
 
+- plots/
+Plots for the tutorial and experiments.
+
+- src/kernel_quantile_regression
+Source code.
+
+- train_test
+    scripts to train the models, saved and test them.
+    - models
+    contains , for each quantile, the pickled trained models.
+
+
+- utils
+Utility functions for extracting, loading and transforming raw data of the GEFCom2014 challenge.
+
+- kqr_tutorial.py
+Getting started example, where our method is compared against other valid quantile regressors.
 
 ## References
 <a id="1">[1]</a> Ichiro Takeuchi, Quoc V. Le, Timothy D. Sears, and Alexander J. Smola. 2006. Non-
