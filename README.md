@@ -1,7 +1,5 @@
 # Kernel quantile regression
-The kernel_quantile_regression package is an open source implementation of the quantile regressor techique introduced in  [[1]](#1).
-
-
+The kernel_quantile_regression package is an open source implementation of the quantile regressor techique from https://jmlr.org/papers/volume7/takeuchi06a/takeuchi06a.pdf
 
 ![alt text](https://github.com/luca-pernigo/kernel_quantile_regression/blob/main/plots/melborune_kernel_quantile_regression.png?raw=true)
 
@@ -27,11 +25,6 @@ kqr_1.fit(X_train, y_train)
 # predict
 kqr_1.predict(X_test)
 ```
-
-## References
-<a id="1">[1]</a> Ichiro Takeuchi, Quoc V. Le, Timothy D. Sears, and Alexander J. Smola. 2006. Non-
-parametric Quantile Estimation. Journal of Machine Learning Research 7, 45 (2006),
-1231–1264. https://www.jmlr.org/papers/volume7/takeuchi06a/takeuchi06a.pdf
 
 
 ## License
