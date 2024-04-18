@@ -27,7 +27,8 @@ kqr_1.fit(X_train, y_train)
 # predict
 kqr_1.predict(X_test)
 ```
-
+## Repo files
+The Data directory contains the raw files for the GEFCom2014 challenge [[3]](#3), data can be accessed from Dr. Tao Hong blog http://blog.drhongtao.com/2017/03/gefcom2014-load-forecasting-data.html. The Data folder contains also the transformed raw data, those constitute the input for our probabilistic forecasting study.
 
 
 ## References
