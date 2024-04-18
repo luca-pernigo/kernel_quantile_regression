@@ -39,8 +39,8 @@ Source code.
 
 - train_test
 scripts to train the models, saved and test them.
-* models
-contains , for each quantile, the pickled trained models.
+    - models
+    contains , for each quantile, the pickled trained models.
 
 
 - utils
