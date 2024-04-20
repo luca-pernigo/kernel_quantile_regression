@@ -201,7 +201,7 @@ if __name__=="__main__":
     for i,q in enumerate(quantiles):
         plt.plot(eval_set,qr_krn_models[i].predict(eval_set), alpha=0.84, label=f"q={quantiles[i]}", linestyle="dashed")
     plt.legend()
-    plt.title("Kernel qr")
+    plt.title("KQR")
     plt.xlabel("Yesterday temperature")
     plt.ylabel("Today temperature")
     plt.savefig("plots/melborune_kernel_quantile_regression.png")
