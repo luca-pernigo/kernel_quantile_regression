@@ -60,19 +60,25 @@ for i,q in enumerate(quantiles):
 n=500
 plt.figure(figsize=(15,5))
 x=np.linspace(0,len(y_test_scaled),num=len(y_test_scaled))[0:n]
-plt.plot(x,y_test[0:n], color="black")
+plt.plot(x,y_test[0:n], color="black", label="effective")
 
 # 95%
 krn_q=pickle.load(open(f"train_test/DE/models/krn_qr_{0.95}.pkl", "rb"))
 y_predict_95=krn_q.predict(X_test_scaled)
-plt.fill_between(x,scaler_y.inverse_transform(y_predict_95.reshape(-1,1)).ravel()[0:n],y_test[0:n], alpha=0.4, color="green", edgecolor="red")
+plt.fill_between(x,scaler_y.inverse_transform(y_predict_95.reshape(-1,1)).ravel()[0:n],y_test[0:n], alpha=0.4, color="green", edgecolor="red", label="95'%' upper bound")
 
 # 5%
 krn_q=pickle.load(open(f"train_test/DE/models/krn_qr_{0.05}.pkl", "rb"))
 y_predict_05=krn_q.predict(X_test_scaled)
 
-plt.fill_between(x,y_test[0:n], scaler_y.inverse_transform(y_predict_05.reshape(-1,1)).ravel()[0:n], alpha=0.4, color="green", edgecolor="red")
+plt.fill_between(x,y_test[0:n], scaler_y.inverse_transform(y_predict_05.reshape(-1,1)).ravel()[0:n], alpha=0.4, color="green", edgecolor="red", label="5'%' lower bound")
+plt.ylabel("Load (MW)")
 
+plt.legend()
+plt.title("Germany load probabilistic forecast")
+
+# savefig
+plt.savefig("plots/DE/load_CI.png")
 plt.show()
 
 # save predictions to csv
