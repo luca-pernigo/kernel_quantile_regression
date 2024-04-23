@@ -90,3 +90,22 @@ def datetime_conv(df, time_col):
     df["IS_HOLIDAY"]=pd.Categorical(df["IS_HOLIDAY"].astype(int))
 
     return df
+
+
+
+# function for etl and cleaning data from energy charts
+def clean_temperatures(df):
+    
+    # first row is addtional text clutter
+    df=df.iloc[1:,:].copy()
+    # rename col
+    df.rename(columns={df.columns[0]:"Time", df.columns[1]:"Temperature"}, inplace=True)
+    return df
+
+
+def de_clean_load(df):
+    # first row is addtional text clutter
+    df=df.iloc[1:,:].copy()
+    # rename col
+    df.rename(columns={df.columns[0]:"Time", df.columns[1]:"Load"}, inplace=True)
+    return df
