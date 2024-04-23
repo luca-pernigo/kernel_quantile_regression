@@ -79,13 +79,3 @@ def test(ith):
 if __name__=="__main__":
     i=int(sys.argv[1])
     ans=test(i)
-
-
-    # original_stdout=sys.stdout
-    # with open(f"/Users/luca/Desktop/ThesisKernelMethods/thesis/tables/qr_gefcom2014.txt", "a") as f:
-    #     sys.stdout=f
-    #     # print(f"Average pinball loss, task n. {i}: ")
-    #     print(f"{ans:.4f}")
-    #     print("&")
-
-    #     sys.stdout=original_stdout
