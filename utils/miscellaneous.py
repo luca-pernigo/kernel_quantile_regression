@@ -103,6 +103,7 @@ def clean_temperatures(df):
     return df
 
 
+# function for etl and cleaning data from energy charts
 def de_clean_load(df):
     # first row is addtional text clutter
     df=df.iloc[1:,:].copy()
