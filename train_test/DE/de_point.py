@@ -18,3 +18,14 @@ print("R2 score: ", r2_score(y_test, pred))
 print("Normalized RMSE: ", np.sqrt(mean_squared_error(y_test, pred))/np.mean(y_test))
 
 print("Normalized MAE: ", mean_absolute_error(y_test, pred)/np.mean(y_test))
+
+
+# \begin{table}[]
+# \caption{CH}
+# \begin{tabular}{lllll}
+# Metric & Scores              &  &  &  \\
+# R2     & 0.8160466760108515  &  &  &  \\
+# NRMSE  & 0.07083200215373132 &  &  &  \\
+# NMAE   & 0.05545222272925634 &  &  & 
+# \end{tabular}
+# \end{table}
