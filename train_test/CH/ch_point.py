@@ -25,8 +25,8 @@ print("Normalized MAE: ", mean_absolute_error(y_test, pred)/np.mean(y_test))
 # \caption{CH}
 # \begin{tabular}{lllll}
 # Metric & Scores              &  &  &  \\
-# R2     &   00000 &  &  &  \\
-# NRMSE  &  00000 &  &  &  \\
-# NMAE   & 00000 &  &  & 
+# R2     &   0.818265365547927 &  &  &  \\
+# NRMSE  &  0.06372668695124227 &  &  &  \\
+# NMAE   & 0.05028771987865394 &  &  & 
 # \end{tabular}
 # \end{table}
