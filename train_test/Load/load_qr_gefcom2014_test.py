@@ -16,8 +16,8 @@ wd = os.path.dirname(os.path.abspath(__file__))
 project_directory = os.path.abspath(os.path.join(wd, '..', '..'))
 sys.path.append(project_directory)
 
-from utils import miscellaneous
-from plots.plot_ci import load_plot_ci
+from utils.miscellaneous import order_quantiles
+from utils.miscellaneous import load_plot_ci
 
 
 
@@ -51,7 +51,7 @@ def test(ith):
         df_predict[f"{q}"]=pd.Series(y_predict_q)
 
     # reorder quantiles
-    reo=miscellaneous.order_quantiles(df_predict)
+    reo=order_quantiles(df_predict)
 
     # save predictions to csv
     reo.to_csv(f"Data/Load/Task {ith}/L{ith}-model_prediction.csv", index=False)
