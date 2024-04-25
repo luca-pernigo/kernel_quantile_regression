@@ -1,4 +1,4 @@
-from kernel_quantile_regression.kqr import KQR
+from src.kernel_quantile_regression.kqr import KQR
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -174,9 +174,9 @@ if __name__=="__main__":
 
     param_grid_krn = dict(
     C=[0.1,1, 5, 10],
-    gamma=[1e-1,1e-2,1, 5, 10, 20]   
+    prm=[{"gamma":1e-1},{"gamma":1e-2},{"gamma":1},{"gamma": 5},{"gamma": 10},{"gamma": 20}]   
     )
-    krn_blueprint=KQR(alpha=0.5)
+    krn_blueprint=KQR(alpha=0.5, kernel_type="laplacian")
     best_hyperparameters_krn=HalvingRandomSearchCV(
             krn_blueprint,
             param_grid_krn,
@@ -188,7 +188,7 @@ if __name__=="__main__":
     for i,q in enumerate(tqdm(quantiles)):
 
         # fit data for specific quantile
-        qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn).fit(X_train, y_train)]
+        qr_krn_models+=[KQR(alpha=q, kernel_type="laplacian", **best_hyperparameters_krn).fit(X_train, y_train)]
         
         # list of prediction for each quantile
         y_test_pred_qr_krn+=[qr_krn_models[i].predict(X_test)]
@@ -220,4 +220,5 @@ if __name__=="__main__":
     mae_scores.loc[0,"Kernel qr"]=mean_absolute_error(y_test, y_test_pred_qr_krn[5])
 
     
-   
+#    Linear qr     Gbm qr Quantile forest  Kernel qr
+#    11.278895  10.317612       10.356462  10.031708

@@ -19,6 +19,7 @@ from sklearn.experimental import enable_halving_search_cv
 from sklearn.metrics import make_scorer
 from sklearn.metrics import mean_pinball_loss
 from sklearn.metrics.pairwise import rbf_kernel
+from sklearn.metrics.pairwise import laplacian_kernel
 
 from sklearn.model_selection import HalvingRandomSearchCV
 from sklearn.model_selection import GridSearchCV
@@ -45,8 +46,11 @@ class KQR(RegressorMixin, BaseEstimator):
     alpha : int, default='0.5'
         quantile under consideration
 
-    gamma : int, default='1'
-        Bandwith of rbf kernel
+    kernel_type : str, default='gaussian_rbf'
+        kind of kernel function    
+    
+    prm : dict, default={"gamma":1}
+        parameters associated with chosen kernel
 
     C : int, default='0.5'
         the cost regularization parameter. This parameter controls the smoothness of the fitted function, essentially higher values for C lead to less smooth functions
@@ -58,11 +62,23 @@ class KQR(RegressorMixin, BaseEstimator):
     y_ : ndarray, shape (n_samples,)
         The dependent variable, our target :meth:`fit`.
     """
-    def __init__(self, alpha, C=1, gamma=1):
-        self.gamma = gamma
+    def __init__(self, alpha, kernel_type="gaussian_rbf",prm={"gamma":1}, C=1):
+    
         self.C=C
         self.alpha=alpha
+        self.kernel_type=kernel_type
+        self.prm=prm
+        # to add function to check consistency between kernel type and parameters else
+        # return error
 
+    def kernel(self, X, Y):
+        # kernels according to specfied kernel type
+        if self.kernel_type=="gaussian_rbf":
+            return rbf_kernel(X,Y, gamma=self.prm["gamma"])
+        
+        if self.kernel_type=="laplacian":
+            return laplacian_kernel(X,Y, gamma=self.prm["gamma"])
+            
     def fit(self, X, y):
         """Implementation of fitting function.
 
@@ -85,7 +101,7 @@ class KQR(RegressorMixin, BaseEstimator):
 
         self.y_ = y
         # build convex optimisation problem
-        K=rbf_kernel(self.X_, gamma=self.gamma)
+        K=self.kernel(self.X_,self.X_)
         # the 0.5 in front in the optimisation probelm is taken into account by cvxopt library
         K = matrix(K)
         # multiply by one to convert matrix items to float https://stackoverflow.com/questions/36510859/cvxopt-qp-solver-typeerror-a-must-be-a-d-matrix-with-1000-columns
@@ -148,7 +164,7 @@ class KQR(RegressorMixin, BaseEstimator):
         # compute y with a and b
         # self.X_=X_train
         # X=X_pred/X_test
-        K=rbf_kernel(self.X_, X, gamma=self.gamma)
+        K=self.kernel(self.X_, X)
         y_pred=self.a.T@K +self.b
         return y_pred
 
