@@ -1,3 +1,9 @@
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import matplotlib.cm as cm
+
+import numpy as np
+
 import pandas as pd
 import re
 
@@ -110,3 +116,34 @@ def de_clean_load(df):
     # rename col
     df.rename(columns={df.columns[0]:"Time", df.columns[1]:"Load"}, inplace=True)
     return df
+
+
+
+def qs_plot(df, figsize, y_test):
+    # Set1 colormap
+    colors = cm.Set1([0,1,2,3,4,5,6,7,8])
+    plt.figure(figsize=figsize)
+    stack_plot(colors, df, y_test)
+    
+    set_legend()
+
+    
+
+def stack_plot(colors, df, y_test):
+    cum = 0
+    for i, color in enumerate(colors):
+        cum += df.iloc[:,i]
+        
+        plt.plot(cum,color=colors[i] , label=f"q = {10*(i+1)}%", linewidth = 0.5)
+
+        if (i==3):
+            # print("aaa")
+            off=cum.copy()
+
+    plt.plot(off+y_test, color="black", linewidth=1, label="effective")
+
+
+def set_legend():
+    # function to set legend outside of plot vertical horientation
+    leg = plt.legend(bbox_to_anchor=(1, 1))
+    
