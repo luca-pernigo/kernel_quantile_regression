@@ -18,8 +18,16 @@ from sklearn.experimental import enable_halving_search_cv
 
 from sklearn.metrics import make_scorer
 from sklearn.metrics import mean_pinball_loss
+
 from sklearn.metrics.pairwise import rbf_kernel
 from sklearn.metrics.pairwise import laplacian_kernel
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import linear_kernel
+from sklearn.metrics.pairwise import polynomial_kernel
+from sklearn.metrics.pairwise import sigmoid_kernel
+from sklearn.metrics.pairwise import chi2_kernel
+from sklearn.gaussian_process.kernels  import Matern
+from sklearn.gaussian_process.kernels import ExpSineSquared
 
 from sklearn.model_selection import HalvingRandomSearchCV
 from sklearn.model_selection import GridSearchCV
@@ -49,8 +57,26 @@ class KQR(RegressorMixin, BaseEstimator):
     kernel_type : str, default='gaussian_rbf'
         kind of kernel function    
     
-    prm : dict, default={"gamma":1}
-        parameters associated with chosen kernel
+    gamma : float, default=1
+        bandwith parameter of rbf gaussian, laplacian, sigmoid, chi_squared, matern, periodic kernels
+    
+    sigma : float, default=None
+        additional parameter for kernels taking more than one parameter
+    
+    omega : float, default=None
+        additional parameter for kernels taking more than one parameter
+
+    c : float, default=None
+        constant offset added to scaled inner product of polynomial, sigmoid kernels
+
+    d : float, default=None
+        degree of polynomial kernel
+
+    nu : float, default=None
+        nu parameter of matern kernel
+    
+    p : float, default=None
+        period of periodic kernel
 
     C : int, default='0.5'
         the cost regularization parameter. This parameter controls the smoothness of the fitted function, essentially higher values for C lead to less smooth functions
@@ -62,23 +88,65 @@ class KQR(RegressorMixin, BaseEstimator):
     y_ : ndarray, shape (n_samples,)
         The dependent variable, our target :meth:`fit`.
     """
-    def __init__(self, alpha, kernel_type="gaussian_rbf",prm={"gamma":1}, C=1):
+    def __init__(self, alpha, kernel_type="gaussian_rbf", C=1, gamma=1, sigma=None, omega=None, c=None, d=None, nu=None, p=None):
     
         self.C=C
         self.alpha=alpha
         self.kernel_type=kernel_type
-        self.prm=prm
-        # to add function to check consistency between kernel type and parameters else
-        # return error
+
+        # prm_s
+        self.gamma=gamma
+        self.sigma=sigma
+        self.omega=omega
+        self.c=c
+        self.d=d
+        self.nu=nu
+        self.p=p
 
     def kernel(self, X, Y):
         # kernels according to specfied kernel type
         if self.kernel_type=="gaussian_rbf":
-            return rbf_kernel(X,Y, gamma=self.prm["gamma"])
+            return rbf_kernel(X,Y, gamma=self.gamma)
         
         if self.kernel_type=="laplacian":
-            return laplacian_kernel(X,Y, gamma=self.prm["gamma"])
-            
+            return laplacian_kernel(X,Y, gamma=self.gamma)
+        
+        
+        if self.kernel_type=="linear":
+            return linear_kernel(X,Y)
+
+        if self.kernel_type=="cosine":
+            return cosine_similarity(X,Y)
+        
+        if self.kernel_type=="polynomial":
+            return polynomial_kernel(X,Y, coef0=self.c, degree=self.d)
+        
+        if self.kernel_type=="sigmoid":
+            return sigmoid_kernel(X,Y, coef0=self.c, gamma=self.gamma)
+        
+        if self.kernel_type=="matern":
+            matern_kernel=1.0*Matern(length_scale=self.gamma, nu=self.nu)
+            return matern_kernel(X,Y)
+
+        if self.kernel_type=="chi_squared":
+            return chi2_kernel(X,Y,gamma=self.gamma)
+        
+        if self.kernel_type=="periodic":
+            periodic=1.0*ExpSineSquared(length_scale=self.gamma, periodicity=self.p)
+            return periodic(X,Y)
+        
+        # class of kernels functions are closed under addition and product
+        if self.kernel_type=="gaussian_rbf_x_laplacian":
+            return rbf_kernel(X,Y, gamma=self.gamma)* laplacian_kernel(X,Y, gamma=self.sigma)
+        
+        
+         # else not implemented
+        else:
+            raise NotImplementedError('No implementation for selected kernel')
+        
+        
+        
+
     def fit(self, X, y):
         """Implementation of fitting function.
 
@@ -95,6 +163,8 @@ class KQR(RegressorMixin, BaseEstimator):
             Returns self.
         """
         # check that X and y have correct shape
+        # self.kernel = 1.0 * Matern(length_scale=1.0, nu=1.5)
+
         X, y = check_X_y(X, y)
         
         self.X_ = X

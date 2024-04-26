@@ -171,12 +171,26 @@ if __name__=="__main__":
     # kernel quantile regression
     qr_krn_models=[]
     y_test_pred_qr_krn=[]
+    ktype="chi_squared"
+
+    # gamma=[1e-1,1e-2,1,5,10,20]
+    # sigma=[1e-1,1e-2,1,5,10,20]
+
+    # polynomial c=[0, 1, 10, 100],
+    # d=[2,3,4,5,8]
+
+    # sigmoid
+    # c=[0, 1, 10, 100],
+    # gamma=[1e-1,1e-2,1,5,10,20]
+
+    # periodic
+    # p=[0,1,10,0.5]
 
     param_grid_krn = dict(
     C=[0.1,1, 5, 10],
-    prm=[{"gamma":1e-1},{"gamma":1e-2},{"gamma":1},{"gamma": 5},{"gamma": 10},{"gamma": 20}]   
+    gamma=[1e-1,1e-2,1,5,10,20]
     )
-    krn_blueprint=KQR(alpha=0.5, kernel_type="laplacian")
+    krn_blueprint=KQR(alpha=0.5, kernel_type=ktype)
     best_hyperparameters_krn=HalvingRandomSearchCV(
             krn_blueprint,
             param_grid_krn,
@@ -188,7 +202,7 @@ if __name__=="__main__":
     for i,q in enumerate(tqdm(quantiles)):
 
         # fit data for specific quantile
-        qr_krn_models+=[KQR(alpha=q, kernel_type="laplacian", **best_hyperparameters_krn).fit(X_train, y_train)]
+        qr_krn_models+=[KQR(alpha=q, kernel_type=ktype, **best_hyperparameters_krn).fit(X_train, y_train)]
         
         # list of prediction for each quantile
         y_test_pred_qr_krn+=[qr_krn_models[i].predict(X_test)]
@@ -204,7 +218,7 @@ if __name__=="__main__":
     plt.title("KQR")
     plt.xlabel("Yesterday temperature")
     plt.ylabel("Today temperature")
-    plt.savefig("plots/melborune_kernel_quantile_regression.png")
+    plt.savefig(f"plots/melborune_{ktype}_kernel_quantile_regression.png")
     plt.show()
 
 
@@ -213,12 +227,22 @@ if __name__=="__main__":
     print("Pinball scores")
     avg_pinball_scores=pinball_scores.sum(axis=0).to_frame().T
     print(avg_pinball_scores)
+
+    # best hyperparameters
+    print(ktype, "best hyperparamters: ", best_hyperparameters_krn)
+
     # mae score
-    mae_scores.loc[0,"Linear qr"]=mean_absolute_error(y_test, y_test_pred_qr[5])
-    mae_scores.loc[0,"Gbm qr"]=mean_absolute_error(y_test, y_test_pred_qr_gbr[5])
-    mae_scores.loc[0,"Quantile forest"]=mean_absolute_error(y_test, y_test_pred_qr_rfr[5])
-    mae_scores.loc[0,"Kernel qr"]=mean_absolute_error(y_test, y_test_pred_qr_krn[5])
+    # mae_scores.loc[0,"Linear qr"]=mean_absolute_error(y_test, y_test_pred_qr[5])
+    # mae_scores.loc[0,"Gbm qr"]=mean_absolute_error(y_test, y_test_pred_qr_gbr[5])
+    # mae_scores.loc[0,"Quantile forest"]=mean_absolute_error(y_test, y_test_pred_qr_rfr[5])
+    # mae_scores.loc[0,"Kernel qr"]=mean_absolute_error(y_test, y_test_pred_qr_krn[5])
 
     
-#    Linear qr     Gbm qr Quantile forest  Kernel qr
-#    11.278895  10.317612       10.356462  10.031708
+#    Linear qr     Gbm qr      Quantile forest  Kernel qr rbf gaussian   Laplacian   Rbf gaussian x laplacian
+#    11.278895     10.317612   10.356462        10.031708                10.057004   10.150826       
+
+#    Cosine       Linear       Polynomial       Sigmoid                 Chi Squared  Matern     
+#    16.253973    10.463867    11.238393        16.253973               10.023732       10.021369  
+
+#    Periodic
+#    15.946272         
