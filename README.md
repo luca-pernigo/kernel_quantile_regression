@@ -3,7 +3,7 @@ The kernel_quantile_regression package is an open source implementation of the q
 
 
 Example of kernel quantile regression on the Melbourne temperature data [[2]](#2).
-![alt text](https://github.com/luca-pernigo/kernel_quantile_regression/blob/main/plots/melborune_kernel_quantile_regression.png?raw=true)
+![alt text](https://github.com/luca-pernigo/kernel_quantile_regression/blob/main/plots/melborune_gaussian_rbf_kernel_quantile_regression.png?raw=true)
 
 ## Installation
 Use the package manager [pip](https://pypi.org/project/kernel-quantile-regression/) to install kernel_quantile_regression.
