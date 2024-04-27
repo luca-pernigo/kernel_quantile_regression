@@ -1,4 +1,4 @@
-from src.kernel_quantile_regression.kqr import KQR
+from kernel_quantile_regression.kqr import KQR
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
