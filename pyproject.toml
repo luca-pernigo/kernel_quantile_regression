@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kernel_quantile_regression"
-version = "0.0.3"
+version = "0.0.10"
 authors = [
   { name="Luca Pernigo", email="luca.pernigo@usi.ch" },
 ]
@@ -18,8 +18,13 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+# name it kernel_quantile_regression
+[tool.hatch.build.targets.wheel]
+packages = ["src/kernel_quantile_regression"]
+
+# where to get data
 [tool.hatch.build]
-include = ['src/*']
+include = ['src/kernel_quantile_regression/*']
 
 
 [project.urls]
