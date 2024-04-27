@@ -171,7 +171,7 @@ if __name__=="__main__":
     # kernel quantile regression
     qr_krn_models=[]
     y_test_pred_qr_krn=[]
-    ktype="chi_squared"
+    ktype="gaussian_rbf"
 
     # gamma=[1e-1,1e-2,1,5,10,20]
     # sigma=[1e-1,1e-2,1,5,10,20]

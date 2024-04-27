@@ -19,15 +19,15 @@ from sklearn.experimental import enable_halving_search_cv
 from sklearn.metrics import make_scorer
 from sklearn.metrics import mean_pinball_loss
 
-from sklearn.metrics.pairwise import rbf_kernel
-from sklearn.metrics.pairwise import laplacian_kernel
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.metrics.pairwise import linear_kernel
-from sklearn.metrics.pairwise import polynomial_kernel
-from sklearn.metrics.pairwise import sigmoid_kernel
-from sklearn.metrics.pairwise import chi2_kernel
 from sklearn.gaussian_process.kernels  import Matern
 from sklearn.gaussian_process.kernels import ExpSineSquared
+from sklearn.metrics.pairwise import chi2_kernel
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import laplacian_kernel
+from sklearn.metrics.pairwise import linear_kernel
+from sklearn.metrics.pairwise import polynomial_kernel
+from sklearn.metrics.pairwise import rbf_kernel
+from sklearn.metrics.pairwise import sigmoid_kernel
 
 from sklearn.model_selection import HalvingRandomSearchCV
 from sklearn.model_selection import GridSearchCV
@@ -64,7 +64,7 @@ class KQR(RegressorMixin, BaseEstimator):
         additional parameter for kernels taking more than one parameter
     
     omega : float, default=None
-        additional parameter for kernels taking more than one parameter
+        additional parameter for kernels taking more than two parameters
 
     c : float, default=None
         constant offset added to scaled inner product of polynomial, sigmoid kernels
@@ -108,35 +108,35 @@ class KQR(RegressorMixin, BaseEstimator):
         if self.kernel_type=="gaussian_rbf":
             return rbf_kernel(X,Y, gamma=self.gamma)
         
-        if self.kernel_type=="laplacian":
+        elif self.kernel_type=="laplacian":
             return laplacian_kernel(X,Y, gamma=self.gamma)
         
         
-        if self.kernel_type=="linear":
+        elif self.kernel_type=="linear":
             return linear_kernel(X,Y)
 
-        if self.kernel_type=="cosine":
+        elif self.kernel_type=="cosine":
             return cosine_similarity(X,Y)
         
-        if self.kernel_type=="polynomial":
+        elif self.kernel_type=="polynomial":
             return polynomial_kernel(X,Y, coef0=self.c, degree=self.d)
         
-        if self.kernel_type=="sigmoid":
+        elif self.kernel_type=="sigmoid":
             return sigmoid_kernel(X,Y, coef0=self.c, gamma=self.gamma)
         
-        if self.kernel_type=="matern":
+        elif self.kernel_type=="matern":
             matern_kernel=1.0*Matern(length_scale=self.gamma, nu=self.nu)
             return matern_kernel(X,Y)
 
-        if self.kernel_type=="chi_squared":
+        elif self.kernel_type=="chi_squared":
             return chi2_kernel(X,Y,gamma=self.gamma)
         
-        if self.kernel_type=="periodic":
+        elif self.kernel_type=="periodic":
             periodic=1.0*ExpSineSquared(length_scale=self.gamma, periodicity=self.p)
             return periodic(X,Y)
         
         # class of kernels functions are closed under addition and product
-        if self.kernel_type=="gaussian_rbf_x_laplacian":
+        elif self.kernel_type=="gaussian_rbf_x_laplacian":
             return rbf_kernel(X,Y, gamma=self.gamma)* laplacian_kernel(X,Y, gamma=self.sigma)
         
         
