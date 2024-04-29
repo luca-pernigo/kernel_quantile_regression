@@ -178,7 +178,7 @@ class KQR(RegressorMixin, BaseEstimator):
         r=matrix(y)* 1.0
         # equality constraint
         A = matrix(np.ones(y.size)).T
-        b = matrix(1.0)
+        b = matrix(0.0)
         # two inequality constraints
         G1 = matrix(np.eye(y.size))
         h1= matrix(self.C*self.alpha*np.ones(y.size))
