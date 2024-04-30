@@ -15,8 +15,10 @@ from tqdm import tqdm
 
 from kernel_quantile_regression.kqr import KQR
 
+
+year=2021
 # load data
-df=pd.read_csv("Data/CH/clean/ch.csv")
+df=pd.read_csv(f"Data/CH/{year}/clean/ch.csv")
 
 # quantiles
 # quantiles = [i/100 for i in range(1,100)]
@@ -25,8 +27,8 @@ quantiles = [0.05, 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9, 0.95]
 # train, test split
 train, test = train_test_split(df, test_size=0.30, random_state=0)
 # save
-train.to_csv("Data/CH/clean/ch_train.csv", index=False)
-test.to_csv("Data/CH/clean/ch_test.csv", index=False)
+train.to_csv(f"Data/CH/{year}/clean/ch_train.csv", index=False)
+test.to_csv(f"Data/CH/{year}/clean/ch_test.csv", index=False)
 
 # X y
 X_train=train[["Temperature","Wind_speed", "Day","Month","Hour","Day_of_week","Is_holiday"]]

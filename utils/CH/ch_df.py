@@ -4,11 +4,14 @@ import pandas as pd
 
 import holidays
 
-df_load=pd.read_csv("Data/CH/clean/load.csv")
+
+year=2022
+
+df_load=pd.read_csv(f"Data/CH/{year}/clean/load.csv")
 
 
-df_temp=pd.read_csv("Data/CH/clean/temperature.csv")
-df_wind=pd.read_csv("Data/CH/clean/wind_speed.csv")
+df_temp=pd.read_csv(f"Data/CH/{year}/clean/temperature.csv")
+df_wind=pd.read_csv(f"Data/CH/{year}/clean/wind_speed.csv")
 
 
 # clean timezone info
@@ -44,7 +47,7 @@ df.dropna(inplace=True)
 df.reset_index(inplace=True, drop=True)
 
 
-df.to_csv("Data/CH/clean/ch.csv", index=False)
+df.to_csv(f"Data/CH/{year}/clean/ch.csv", index=False)
 
 
 

@@ -9,9 +9,11 @@ project_directory = os.path.abspath(os.path.join(wd, '..', '..'))
 sys.path.append(project_directory)
 from utils.miscellaneous import en_clean_load
 
-df=pd.read_csv("Data/CH/CH_load.csv")
+year=2022
+
+df=pd.read_csv(f"Data/CH/{year}/CH_load.csv")
 
 df=en_clean_load(df)
 df.reset_index(inplace=True, drop=True)
 
-df.to_csv("Data/CH/clean/load.csv", index=False)
+df.to_csv(f"Data/CH/{year}/clean/load.csv", index=False)

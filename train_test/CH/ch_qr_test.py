@@ -21,9 +21,11 @@ sys.path.append(project_directory)
 from utils import miscellaneous
 
 
+year=2022
+
 # load train test data
-train=pd.read_csv(f"Data/CH/clean/ch_train.csv")
-test=pd.read_csv(f"Data/CH/clean/ch_test.csv")
+train=pd.read_csv(f"Data/CH/{year}/clean/ch_train.csv")
+test=pd.read_csv(f"Data/CH/{year}/clean/ch_test.csv")
 
 # X y
 X_train=train[["Temperature","Wind_speed","Day","Month","Hour","Day_of_week","Is_holiday"]]
@@ -79,11 +81,11 @@ plt.xlabel("Observations")
 plt.title("Probabilistic forecast for load in Switzerland (2021)")
 
 # savefig
-plt.savefig("plots/CH/CH_load_CI.png")
+# plt.savefig("plots/CH/CH_load_CI.png")
 plt.show()
 
 # save predictions to csv
-df_predict.to_csv(f"Data/CH/clean/model_prediction.csv", index=False)
+df_predict.to_csv(f"Data/CH/{year}/clean/model_prediction.csv", index=False)
 
 
 # compute pinball loss
