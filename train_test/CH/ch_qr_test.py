@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import colormaps
 
 import numpy as np
 
@@ -21,19 +22,19 @@ sys.path.append(project_directory)
 from utils import miscellaneous
 
 
-year=2022
-
 # load train test data
-train=pd.read_csv(f"Data/CH/{year}/clean/ch_train.csv")
-test=pd.read_csv(f"Data/CH/{year}/clean/ch_test.csv")
+train=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
+test=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
+
 
 # X y
-X_train=train[["Temperature","Wind_speed","Day","Month","Hour","Day_of_week","Is_holiday"]]
-X_test=test[["Temperature","Wind_speed","Day","Month","Hour","Day_of_week","Is_holiday"]]
+X_train=train[["Temperature","Wind_speed","Day_of_week","Is_holiday"]]
+X_test=test[["Temperature","Wind_speed","Day_of_week","Is_holiday"]]
 
 y_train=train["Load"]
 y_test=test["Load"]
 
+exp="full"
 quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
 # scale data
@@ -41,51 +42,20 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-scaler_y = StandardScaler()
-y_train_scaled = scaler_y.fit_transform(y_train.values.reshape(-1,1))
-y_test_scaled = scaler_y.transform(y_test.values.reshape(-1,1))
-
 # predict df
 df_predict=pd.DataFrame(columns=[f"{q}" for q in quantiles])
 
 for i,q in enumerate(quantiles):
     # load model
-    krn_q=pickle.load(open(f"train_test/CH/models/krn_qr_{q}.pkl", "rb"))
+    krn_q=pickle.load(open(f"train_test/CH/models_{exp}/krn_qr_{q}.pkl", "rb"))
     # predict
     y_predict_q=krn_q.predict(X_test_scaled)
-    
+    print(mean_pinball_loss(y_test,y_predict_q, alpha=q)/np.mean(y_test))
     # put in predict df
-    df_predict[f"{q}"]=pd.Series(scaler_y.inverse_transform(y_predict_q.reshape(-1,1)).reshape(-1,))
-
-
-# plot first predictions
-n=100
-plt.figure(figsize=(15,5))
-x=np.linspace(0,len(y_test_scaled),num=len(y_test_scaled))[0:n]
-plt.plot(x,y_test[0:n], color="black", label="effective")
-
-# 95%
-krn_q=pickle.load(open(f"train_test/CH/models/krn_qr_{0.95}.pkl", "rb"))
-y_predict_95=krn_q.predict(X_test_scaled)
-plt.fill_between(x,scaler_y.inverse_transform(y_predict_95.reshape(-1,1)).ravel()[0:n],y_test[0:n], alpha=0.4, color="green", edgecolor="red", label="95%")
-
-# 5%
-krn_q=pickle.load(open(f"train_test/CH/models/krn_qr_{0.05}.pkl", "rb"))
-y_predict_05=krn_q.predict(X_test_scaled)
-
-plt.fill_between(x,y_test[0:n], scaler_y.inverse_transform(y_predict_05.reshape(-1,1)).ravel()[0:n], alpha=0.4, color="green", edgecolor="red", label="5%")
-plt.ylabel("Load (MW)")
-
-plt.legend()
-plt.xlabel("Observations")
-plt.title("Probabilistic forecast for load in Switzerland (2021)")
-
-# savefig
-# plt.savefig("plots/CH/CH_load_CI.png")
-plt.show()
+    df_predict[f"{q}"]=pd.Series(y_predict_q)
 
 # save predictions to csv
-df_predict.to_csv(f"Data/CH/{year}/clean/model_prediction.csv", index=False)
+df_predict.to_csv(f"Data/CH/2022/clean/model_prediction_{exp}.csv", index=False)
 
 
 # compute pinball loss
@@ -93,10 +63,13 @@ pinball_tot=0
 for i,q in enumerate(quantiles):
     # normalized pinball loss
     pinball_q=mean_pinball_loss(y_test,df_predict[f"{q}"], alpha=q)/np.mean(y_test)
-    print(f"pinball loss quantile {q}: ", pinball_q)
+    # print(f"pinball loss quantile {q}: ", pinball_q)
+    print(f"{q}  &  {pinball_q}  \\\\ ")
     pinball_tot+=pinball_q
 
 
 ans=pinball_tot/len(quantiles)
 print("total quantile loss: ", ans)
+
+
 

@@ -4,14 +4,16 @@ import pandas as pd
 
 import holidays
 
-df_load=pd.read_csv("Data/DE/2021/clean/load.csv")
+year=2022
+df_load=pd.read_csv(f"Data/DE/{year}/clean/load.csv")
 
 
-df_temp=pd.read_csv("Data/DE/2021/clean/temperature.csv")
-
+df_temp=pd.read_csv(f"Data/DE/{year}/clean/temperature.csv")
+df_wind=pd.read_csv(f"Data/CH/{year}/clean/wind_speed.csv")
 
 # merge on time
 df=pd.merge(df_load, df_temp, how="right", on=["Time"])
+df["Wind_speed"] = df_wind["Wind_speed"]
 
 # drop last because is NaN
 df=df.iloc[:-1, :].copy()
@@ -35,7 +37,7 @@ hol=holidays.DE(years=range(df["Time"].iloc[0].year, df["Time"].iloc[-1].year+1)
 df["Is_holiday"]=pd.Series(df["Time"].dt.date).isin(hol).astype(int)  
 
 # save
-df.to_csv("Data/DE/2021/clean/de.csv", index=False)
+df.to_csv(f"Data/DE/{year}/clean/de.csv", index=False)
 
 
 

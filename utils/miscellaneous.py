@@ -111,6 +111,14 @@ def clean_temperatures(df):
     df.rename(columns={df.columns[0]:"Time", df.columns[1]:"Temperature"}, inplace=True)
     return df
 
+def clean_winds(df):
+    
+    # first row is addtional text clutter
+    df=df.iloc[1:,:].copy()
+    # rename col
+    df.rename(columns={df.columns[0]:"Time", df.columns[1]:"Wind_speed"}, inplace=True)
+    return df
+
 
 # function for etl and cleaning data from energy charts
 def en_clean_load(df):
