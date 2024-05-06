@@ -42,13 +42,15 @@ def test(ith):
 
     pinball_tot=0
 
+    ktype="gaussian_rbf"
+
     # predict
     df_template_submission=pd.read_csv(f"Data/Price/Task {ith}/Benchmark{ith}_P.csv")
 
     df_predict=df_template_submission[["ZONEID", "timestamp"]].copy()
 
     for i,q in enumerate(quantiles):
-        krn_q=pickle.load(open(f"train_test/Price/models/task {ith}/krn_qr_{i}.pkl", "rb"))
+        krn_q=pickle.load(open(f"train_test/Price/{ktype}/task {ith}/krn_qr_{i}.pkl", "rb"))
         y_predict_q=krn_q.predict(X_test_scaled)
         
         df_predict[f"{q}"]=pd.Series(y_predict_q)
@@ -57,7 +59,7 @@ def test(ith):
     reo=order_quantiles(df_predict)
 
     # save predictions to csv
-    reo.to_csv(f"Data/Price/Task {ith}/L{ith}-model_prediction.csv", index=False)
+    reo.to_csv(f"Data/Price/Task {ith}/L{ith}-model_prediction_{ktype}.csv", index=False)
 
     # compute pinball loss
     pinball_tot=0
@@ -69,8 +71,9 @@ def test(ith):
 
     # plot
     price_plot_ci(reo, y_test)
-    plt.title(f"Task {ith}")
-    plt.savefig(f"plots/Price/price_task_{ith}.png")
+    plt.title(f"Task {ith}, {ktype} kernel")
+    plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
+    plt.legend()
     plt.show()
 
     ans=pinball_tot/len(quantiles)

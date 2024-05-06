@@ -23,7 +23,7 @@ if __name__=="__main__":
     task_month={4:7,5:7,6:7,7:7,8:7,9:7,10:7,11:7,12:7,13:12,14:12,15:12}
     # load data
     df_train=pd.read_csv(f"Data/Price/Task {ith}/Task{ith}_P_train.csv")
-    df_train=df_train[(df_train["MONTH"]==task_month[ith])][-1000:]
+    df_train=df_train[(df_train["MONTH"]==task_month[ith])][-1440:]
     # define train
     X_train=df_train[["DAY","HOUR","Forecasted Total Load","Forecasted Zonal Load"]]
     y_train=df_train["Zonal Price"]
@@ -44,7 +44,7 @@ if __name__=="__main__":
     gamma=[1e-1,1e-2,0.5,1, 5, 10, 20]   
     )
     
-    
+    ktype="laplacian"
     for i,q in enumerate(tqdm(quantiles)):
         
         # define loss to tune
@@ -65,8 +65,8 @@ if __name__=="__main__":
             ).fit(X_train_scaled, y_train).best_params_
 
         # fit data for specific quantile
-        qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn).fit(X_train_scaled, y_train)]
+        qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn, kernel_type=ktype).fit(X_train_scaled, y_train)]
 
         # save models to pickle
-        pickle.dump(qr_krn_models[i], open(f'train_test/Price/models/task {ith}/krn_qr_{i}.pkl', 'wb'))
+        pickle.dump(qr_krn_models[i], open(f'train_test/Price/{ktype}/task {ith}/krn_qr_{i}.pkl', 'wb'))
         
