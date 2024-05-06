@@ -176,14 +176,16 @@ def load_plot_ci(df, y):
     
     plt.figure(figsize=(15,5))
     # plot quantile range
-    plt.plot(y,color="black")
+    plt.plot(y,color="black", label="effective")
     
     plt.fill_between(x,y_predict_5,y, alpha=0.4, color="green", edgecolor="red")
-    plt.fill_between(x,y,y_predict_95, alpha=0.4, color="green", edgecolor="red")
+    plt.fill_between(x,y,y_predict_95, alpha=0.4, color="green", edgecolor="red", label="90% Confidence interval")
     
     plt.xticks(ticks=tick_array, labels=labels, rotation=45)
     plt.xlabel("Days")
-    plt.ylabel("Load in MW")
+    plt.ylabel("Load (MW)")
+
+    plt.legend()
     return None
 
 
@@ -199,12 +201,14 @@ def price_plot_ci(df, y):
     tick_array = [i for i in range(0,23+1)]
     
     # plot quantile range
-    plt.plot(y,color="black")
+    plt.plot(y,color="black", label="effective")
     
     plt.fill_between(x,y_predict_5,y, alpha=0.4, color="green", edgecolor="red")
-    plt.fill_between(x,y,y_predict_95, alpha=0.4, color="green", edgecolor="red")
+    plt.fill_between(x,y,y_predict_95, alpha=0.4, color="green", edgecolor="red", label="90% Confidence interval")
     
     plt.xticks(ticks=tick_array, rotation=45)
     plt.xlabel("Hours")
-    plt.ylabel("Price in MWh")
+    plt.ylabel("Price (MWh)")
+
+    plt.legend()
     return None
