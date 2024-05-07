@@ -8,6 +8,9 @@ from sklearn.preprocessing import StandardScaler
 
 import sys
 
+
+# script for plotting saved predictions
+
 # select country
 country="CH"
 country_name="Switzerland"
