@@ -22,7 +22,7 @@ from utils import miscellaneous
 
 
 # load train test data
-train=pd.read_csv(f"Data/DE/2021/clean/de_train.csv")
+train=pd.read_csv(f"Data/DE/2021/clean/de.csv")
 test=pd.read_csv(f"Data/DE/2022/clean/de.csv")
 
 # X y
