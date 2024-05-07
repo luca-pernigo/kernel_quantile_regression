@@ -1,6 +1,6 @@
 
 import cvxopt as opt
-from cvxopt.solvers import qp, options
+from cvxopt.solvers import qp, options, coneqp
 from cvxopt import matrix, spmatrix, sparse
 from cvxopt import blas
  
@@ -21,6 +21,9 @@ from sklearn.metrics import mean_pinball_loss
 
 from sklearn.gaussian_process.kernels  import Matern
 from sklearn.gaussian_process.kernels import ExpSineSquared
+from sklearn.gaussian_process.kernels import Product
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.gaussian_process.kernels import PairwiseKernel
 from sklearn.metrics.pairwise import chi2_kernel
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import laplacian_kernel
@@ -44,7 +47,6 @@ from sklearn.utils.multiclass import unique_labels
 import sys
 import time
 from tqdm import tqdm
-
 
 class KQR(RegressorMixin, BaseEstimator):
     """ Code implementing kernel quantile regression.
@@ -124,8 +126,16 @@ class KQR(RegressorMixin, BaseEstimator):
         elif self.kernel_type=="sigmoid":
             return sigmoid_kernel(X,Y, coef0=self.c, gamma=self.gamma)
         
-        elif self.kernel_type=="matern":
-            matern_kernel=1.0*Matern(length_scale=self.gamma, nu=self.nu)
+        elif self.kernel_type=="matern_0.5":
+            matern_kernel=1.0*Matern(length_scale=self.gamma, nu=0.5)
+            return matern_kernel(X,Y)
+        
+        elif self.kernel_type=="matern_1.5":
+            matern_kernel=1.0*Matern(length_scale=self.gamma, nu=1.5)
+            return matern_kernel(X,Y)
+        
+        elif self.kernel_type=="matern_2.5":
+            matern_kernel=1.0*Matern(length_scale=self.gamma, nu=2.5)
             return matern_kernel(X,Y)
 
         elif self.kernel_type=="chi_squared":
@@ -139,7 +149,15 @@ class KQR(RegressorMixin, BaseEstimator):
         elif self.kernel_type=="gaussian_rbf_x_laplacian":
             return rbf_kernel(X,Y, gamma=self.gamma)* laplacian_kernel(X,Y, gamma=self.sigma)
         
+        elif self.kernel_type=="prod_1":
+            matern_kernel=1.0*Matern(length_scale=self.gamma, nu=2.5)
+            return matern_kernel(X[:,0].reshape(-1,1),Y[:,0].reshape(-1,1))*laplacian_kernel(X[:,0].reshape(-1,1),Y[:,0].reshape(-1,1), gamma=self.sigma)
         
+        elif self.kernel_type=="prod_2":
+            prod_2=Product(PairwiseKernel(metric='rbf', gamma=self.gamma), PairwiseKernel(metric='laplacian', gamma=self.sigma))
+            return prod_2(X,Y)
+
+
          # else not implemented
         else:
             raise NotImplementedError('No implementation for selected kernel')
@@ -183,12 +201,17 @@ class KQR(RegressorMixin, BaseEstimator):
         G1 = matrix(np.eye(y.size))
         h1= matrix(self.C*self.alpha*np.ones(y.size))
         G2 = matrix(- np.eye(y.size))
-        h2= matrix(self.C*(self.alpha-1)*np.ones(y.size))
+        h2= matrix(self.C*(1-self.alpha)*np.ones(y.size))
         # concatenate
         G = matrix([G1,G2])
-        h = matrix([h1,-h2])
+        h = matrix([h1,h2])
         # Solve
-        sol = qp(P=K,q=-r,G=G,h=h,A=A,b=b)
+        nonconic=True
+        if nonconic:
+            sol = qp(P=K,q=-r,G=G,h=h,A=A,b=b)
+        # else:
+        #     # epsilon intensive loss
+        #     sol = coneqp(P=K,q=-r,G=G,h=h, A=A,b=b)
         # alpha solution
         self.a=np.array(sol["x"]).flatten()
         
