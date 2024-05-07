@@ -7,6 +7,9 @@ import sys
 
 
 from sec_met import clean_sec_met_train
+
+
+# script to clean SECURES-Met data into train data
 # CH
 
 # clean_sec_met_train("~/Desktop/Historical/NUTS0_Europe/T2M_NUTS0_Europe_popweight_historical_hourly_1981-2020.csv", "CH","Temperature", "temperature")

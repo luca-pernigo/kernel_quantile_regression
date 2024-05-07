@@ -8,6 +8,8 @@ import sys
 
 from sec_met import clean_sec_met_test
 
+
+# script to clean SECURES-Met data into test data
 # CH
 
 clean_sec_met_test("/Users/luca/Downloads/Future_RCP45/NUTS0_Europe/T2M_NUTS0_Europe_popweight_rcp45_hourly_2001-2050.csv", "CH","Temperature", "temperature")

@@ -6,6 +6,7 @@ import sys
 
 from sec_met import clean_load
 
+# script to clean the load data from energy charts
 # CH
 clean_load("energy-charts_Public_net_electricity_generation_in_Switzerland_in_2021", "CH", "test")
 clean_load("energy-charts_Public_net_electricity_generation_in_Switzerland_in_2020", "CH", "train")
