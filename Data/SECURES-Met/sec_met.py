@@ -9,6 +9,8 @@ sys.path.append("/Users/luca/Desktop/kernel_quantile_regression")
 from utils.miscellaneous import en_clean_load
 
 
+# procedures used for cleaning SECURES-Met data
+
 def clean_sec_met_train(filepath, country, field, savename):
     # script to create data
     df=pd.read_csv(f"{filepath}")
