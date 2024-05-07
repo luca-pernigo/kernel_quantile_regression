@@ -1,4 +1,4 @@
-from kernel_quantile_regression.kqr import KQR
+from src.kernel_quantile_regression.kqr import KQR
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -34,6 +34,8 @@ if __name__=="__main__":
 
     # plot data
     plt.plot(df["Yt-1"],df["Yt"],"o", alpha=0.2)
+    plt.xlabel("Yesterday temperature")
+    plt.ylabel("Today temperature")
     plt.show()
 
     # train, test split
@@ -171,7 +173,7 @@ if __name__=="__main__":
     # kernel quantile regression
     qr_krn_models=[]
     y_test_pred_qr_krn=[]
-    ktype="laplacian"
+    ktype="gaussian_rbf_x_laplacian"
 
     # gamma=[1e-1,1e-2,1,5,10,20]
     # sigma=[1e-1,1e-2,1,5,10,20]
@@ -188,7 +190,8 @@ if __name__=="__main__":
 
     param_grid_krn = dict(
     C=[0.1,1, 5, 10],
-    gamma=[1e-1,1e-2,1,5,10,20]
+    gamma=[1e-1,1e-2,1,5,10,20],
+    sigma=[1e-1,1e-2,1,5,10,20]
     )
     krn_blueprint=KQR(alpha=0.5, kernel_type=ktype)
     best_hyperparameters_krn=HalvingRandomSearchCV(
@@ -239,10 +242,13 @@ if __name__=="__main__":
 
     
 #    Linear qr     Gbm qr      Quantile forest  Kernel qr rbf gaussian   Laplacian   Rbf gaussian x laplacian
-#    11.278895     10.317612   10.370558        10.031708                10.056884   10.150826       
+#    11.278895     10.317612   10.370558        10.031708                10.056884   10.15074       
 
 #    Cosine       Linear       Polynomial       Sigmoid                 Chi Squared  Matern     
 #    16.253973    10.463867    11.238393        16.253973               10.023732       10.021369  
 
-#    Periodic
-#    15.946272         
+#    Periodic     Rbf gaussian x laplacian with Product object from sklearn.gaussian_process.kernels
+#    15.946272    10.15074
+
+
+# notice, using product or the * operator works exactly the same
