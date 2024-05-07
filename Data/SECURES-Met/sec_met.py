@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import pandas as pd
 
 import glob
@@ -93,13 +94,22 @@ def clean_load(file, country, train_test):
 
 
 def df_create(dir):
-    df1=pd.read_csv(f"{dir}/direct_irradiation.csv")
-    df2=pd.read_csv(f"{dir}/global_radiation.csv")
-    df3=pd.read_csv(f"{dir}/hydro_reservoir.csv")
-    df4=pd.read_csv(f"{dir}/hydro_river.csv")
-    df5=pd.read_csv(f"{dir}/temperature.csv")
-    df6=pd.read_csv(f"{dir}/wind_potential.csv")
-    df7=pd.read_csv(f"{dir}/load.csv")  
+    df1=pd.read_csv(f"{dir}/direct_irradiation.csv", parse_dates=["Time"])
+    df2=pd.read_csv(f"{dir}/global_radiation.csv",parse_dates=["Time"])
+    df3=pd.read_csv(f"{dir}/hydro_reservoir.csv",parse_dates=["Time"])
+    df4=pd.read_csv(f"{dir}/hydro_river.csv",parse_dates=["Time"])
+    df5=pd.read_csv(f"{dir}/temperature.csv",parse_dates=["Time"])
+    df6=pd.read_csv(f"{dir}/wind_potential.csv",parse_dates=["Time"])
+    df7=pd.read_csv(f"{dir}/load.csv",parse_dates=["Time"])  
 
-    res=pd.concat([df7["Time"],df7["Load"], df1['Direct_irradiation'], df2['Global_radiation'], df3["Hydro_reservoir"], df4["Hydro_river"], df5["Temperature"], df6["Wind_potential"]], axis=1)
+    # merge on time
+    df7['Time']=pd.to_datetime(df7["Time"], utc=True)
+    df7['Time']+= pd.Timedelta(hours=1)
+    df7['Time']=df7['Time'].dt.tz_convert(None)
+
+    df=pd.merge(df7, df1, how="inner", on=["Time"])
+    
+    res=pd.concat([df["Time"],df["Load"], df1['Direct_irradiation'], df2['Global_radiation'], df3["Hydro_reservoir"], df4["Hydro_river"], df5["Temperature"], df6["Wind_potential"]], axis=1)
+    
+    
     res.to_csv(f"{dir}/df.csv", index=False)
