@@ -40,7 +40,7 @@ def test(ith):
 
     pinball_tot=0
 
-    ktype="gaussian_rbf"
+    ktype="laplacian"
     
     # predict
     df_template_submission=pd.read_csv(f"Data/Load/Task {ith}/L{ith}-benchmark.csv")
@@ -51,8 +51,8 @@ def test(ith):
         krn_q=pickle.load(open(f"train_test/Load/{ktype}/task {ith}/krn_qr_{i}.pkl", "rb"))
         y_predict_q=krn_q.predict(X_test_scaled)
 
-        pinball_q=mean_pinball_loss(y_test,y_predict_q, alpha=q)
-        print(f"pinball loss quantile {q}: ", pinball_q)
+        # pinball_q=mean_pinball_loss(y_test,y_predict_q, alpha=q)
+        # print(f"pinball loss quantile {q}: ", pinball_q)
         df_predict[f"{q}"]=pd.Series(y_predict_q)
 
     # reorder quantiles

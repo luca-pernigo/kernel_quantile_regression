@@ -67,7 +67,7 @@ if __name__=="__main__":
             ).fit(X_train_scaled, y_train).best_params_
 
         # fit data for specific quantile
-        qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn).fit(X_train_scaled, y_train)]
+        qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn, kernel_type=ktype).fit(X_train_scaled, y_train)]
 
         # save models to pickle
         pickle.dump(qr_krn_models[i], open(f'train_test/Load/{ktype}/task {ith}/krn_qr_{i}.pkl', 'wb'))

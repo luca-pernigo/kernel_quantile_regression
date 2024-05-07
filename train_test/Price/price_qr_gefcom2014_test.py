@@ -42,7 +42,7 @@ def test(ith):
 
     pinball_tot=0
 
-    ktype="gaussian_rbf"
+    ktype="laplacian"
 
     # predict
     df_template_submission=pd.read_csv(f"Data/Price/Task {ith}/Benchmark{ith}_P.csv")
@@ -70,11 +70,11 @@ def test(ith):
         pinball_tot+=pinball_q
 
     # plot
-    price_plot_ci(reo, y_test)
-    plt.title(f"Task {ith}, {ktype} kernel")
-    plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
-    plt.legend()
-    plt.show()
+    # price_plot_ci(reo, y_test)
+    # plt.title(f"Task {ith}, {ktype} kernel")
+    # plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
+    # plt.legend()
+    # plt.show()
 
     ans=pinball_tot/len(quantiles)
     print("total quantile: ", ans)
