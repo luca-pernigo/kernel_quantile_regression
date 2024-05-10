@@ -22,8 +22,8 @@ sys.path.append(project_directory)
 from utils import miscellaneous
 
 
-country="DE"
-ktype="gaussian_rbf"
+country="CH"
+ktype="laplacian"
 
 # load train test data
 
@@ -53,7 +53,7 @@ for i,q in enumerate(quantiles):
     krn_q=pickle.load(open(f'/Users/luca/Desktop/kernel_quantile_regression/train_test/SECURES-Met/{country}/{ktype}/krn_qr_{q}.pkl', 'rb'))
     # predict
     y_predict_q=krn_q.predict(X_test_scaled)
-    # print(mean_pinball_loss(y_test,y_predict_q, alpha=q)/np.mean(y_test))
+    print(mean_pinball_loss(y_test,y_predict_q, alpha=q)/np.mean(y_test))
     # put in predict df
     df_predict[f"{q}"]=pd.Series(y_predict_q)
 

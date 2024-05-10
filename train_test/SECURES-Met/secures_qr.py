@@ -1,4 +1,6 @@
 # script to train models on SECURES-Met data
+import itertools
+
 import numpy as np
 import pandas as pd
 import pickle
@@ -14,11 +16,11 @@ import sys
 from tqdm import tqdm
 
 sys.path.append("/Users/luca/Desktop/kernel_quantile_regression/")
-from src.kernel_quantile_regression.kqr import KQR
+from kernel_quantile_regression.kqr import KQR
 
 
-country="DE"
-ktype="linear"
+country="CH"
+ktype="laplacian"
 # load train data
 df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/train/df.csv")
 
@@ -42,10 +44,10 @@ X_train_scaled = scaler.fit_transform(X_train)
 qr_krn_models=[]
 y_test_pred_qr_krn=[]
 
-# gamma=[1e-1,1e-2,0.5,1, 5, 10, 20]
-# gamma=[1/1e-1,1/1e-2,1/0.5,1, 1/5, 1/10, 1/20]
+
 param_grid_krn = dict(
-C=[1e-1,1e-2,1, 5, 10,1e2,1e4]
+C=[1e-1,1e-2,1, 5, 10,1e2,1e4],
+gamma=[1e-1,1e-2,0.5,1, 5, 10, 20]
 )
 
 neg_mean_pinball_loss_scorer_05 = make_scorer(
