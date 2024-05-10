@@ -14,7 +14,7 @@ import sys
 from tqdm import tqdm
 
 sys.path.append("/Users/luca/Desktop/kernel_quantile_regression/")
-from src.kernel_quantile_regression.kqr import KQR
+from kernel_quantile_regression.kqr import KQR
 
 
 # load train data
