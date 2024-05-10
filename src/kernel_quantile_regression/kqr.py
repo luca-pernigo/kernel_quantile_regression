@@ -83,6 +83,9 @@ class KQR(RegressorMixin, BaseEstimator):
     C : int, default='0.5'
         the cost regularization parameter. This parameter controls the smoothness of the fitted function, essentially higher values for C lead to less smooth functions
 
+    gammas : list, default=None
+             list of gammas in the se ard kernel, it consist of the product of laplacian kernels on each single feature
+
     Attributes
     ----------
     X_ : ndarray, shape (n_samples, n_features)
@@ -220,7 +223,7 @@ class KQR(RegressorMixin, BaseEstimator):
         h = matrix([h1,h2])
         # solve    
         sol = qp(P=K,q=-r,G=G,h=h,A=A,b=b)
-        
+
         # alpha solution
         self.a=np.array(sol["x"]).flatten()
         
