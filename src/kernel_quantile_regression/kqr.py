@@ -90,7 +90,7 @@ class KQR(RegressorMixin, BaseEstimator):
     y_ : ndarray, shape (n_samples,)
         The dependent variable, our target :meth:`fit`.
     """
-    def __init__(self, alpha, kernel_type="gaussian_rbf", C=1, gamma=1, sigma=None, omega=None, c=None, d=None, nu=None, p=None):
+    def __init__(self, alpha, kernel_type="gaussian_rbf", C=1, gamma=1, sigma=None, omega=None, c=None, d=None, nu=None, p=None, gammas=None):
     
         self.C=C
         self.alpha=alpha
@@ -104,6 +104,7 @@ class KQR(RegressorMixin, BaseEstimator):
         self.d=d
         self.nu=nu
         self.p=p
+        self.gammas=gammas
 
     def kernel(self, X, Y):
         # kernels according to specfied kernel type
@@ -127,6 +128,7 @@ class KQR(RegressorMixin, BaseEstimator):
             return sigmoid_kernel(X,Y, coef0=self.c, gamma=self.gamma)
         
         elif self.kernel_type=="matern_0.5":
+            # is the same of laplacian
             matern_kernel=1.0*Matern(length_scale=self.gamma, nu=0.5)
             return matern_kernel(X,Y)
         
@@ -149,6 +151,18 @@ class KQR(RegressorMixin, BaseEstimator):
         elif self.kernel_type=="gaussian_rbf_x_laplacian":
             return rbf_kernel(X,Y, gamma=self.gamma)* laplacian_kernel(X,Y, gamma=self.sigma)
         
+        
+        elif self.kernel_type=="se_ard":
+            se_ard=1
+            for i in range(X.shape[1]-1):
+                
+                se_ard*=laplacian_kernel(X[:,(i+1)].reshape(-1,1),Y[:,(i+1)].reshape(-1,1), gamma=self.gammas[i])
+            return se_ard
+
+        elif self.kernel_type=="laplacian_x_periodic":
+            kernel=Product(ExpSineSquared(length_scale=self.gamma, periodicity=24), PairwiseKernel(metric='laplacian', gamma=self.sigma))
+            return kernel(X,Y)
+        
         elif self.kernel_type=="prod_1":
             matern_kernel=1.0*Matern(length_scale=self.gamma, nu=2.5)
             return matern_kernel(X[:,0].reshape(-1,1),Y[:,0].reshape(-1,1))*laplacian_kernel(X[:,0].reshape(-1,1),Y[:,0].reshape(-1,1), gamma=self.sigma)
@@ -156,7 +170,6 @@ class KQR(RegressorMixin, BaseEstimator):
         elif self.kernel_type=="prod_2":
             prod_2=Product(PairwiseKernel(metric='rbf', gamma=self.gamma), PairwiseKernel(metric='laplacian', gamma=self.sigma))
             return prod_2(X,Y)
-
 
          # else not implemented
         else:
@@ -205,13 +218,9 @@ class KQR(RegressorMixin, BaseEstimator):
         # concatenate
         G = matrix([G1,G2])
         h = matrix([h1,h2])
-        # Solve
-        nonconic=True
-        if nonconic:
-            sol = qp(P=K,q=-r,G=G,h=h,A=A,b=b)
-        # else:
-        #     # epsilon intensive loss
-        #     sol = coneqp(P=K,q=-r,G=G,h=h, A=A,b=b)
+        # solve    
+        sol = qp(P=K,q=-r,G=G,h=h,A=A,b=b)
+        
         # alpha solution
         self.a=np.array(sol["x"]).flatten()
         
@@ -232,7 +241,7 @@ class KQR(RegressorMixin, BaseEstimator):
         self.b = y[offshift] - self.a.T@K[:,offshift]
         # print("beta mean: ", self.b)
         
-        # Return the regressor
+        # return the regressor
         return self
 
     def predict(self, X):
