@@ -173,7 +173,7 @@ if __name__=="__main__":
     # kernel quantile regression
     qr_krn_models=[]
     y_test_pred_qr_krn=[]
-    ktype="gaussian_rbf_x_laplacian"
+    ktype="laplacian"
 
     # gamma=[1e-1,1e-2,1,5,10,20]
     # sigma=[1e-1,1e-2,1,5,10,20]
@@ -190,8 +190,7 @@ if __name__=="__main__":
 
     param_grid_krn = dict(
     C=[0.1,1, 5, 10],
-    gamma=[1e-1,1e-2,1,5,10,20],
-    sigma=[1e-1,1e-2,1,5,10,20]
+    gamma=[1e-1,1e-2,1,5,10,20]
     )
     krn_blueprint=KQR(alpha=0.5, kernel_type=ktype)
     best_hyperparameters_krn=HalvingRandomSearchCV(
