@@ -1,6 +1,7 @@
 # script to train models on SECURES-Met data
 import itertools
 
+import math
 import numpy as np
 import pandas as pd
 import pickle
@@ -20,7 +21,7 @@ from kernel_quantile_regression.kqr import KQR
 
 
 country="CH"
-ktype="laplacian"
+ktype="matern_1.5"
 # load train data
 df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/train/df.csv")
 
@@ -44,7 +45,6 @@ X_train_scaled = scaler.fit_transform(X_train)
 qr_krn_models=[]
 y_test_pred_qr_krn=[]
 
-
 param_grid_krn = dict(
 C=[1e-1,1e-2,1, 5, 10,1e2,1e4],
 gamma=[1e-1,1e-2,0.5,1, 5, 10, 20]
@@ -65,9 +65,10 @@ best_hyperparameters_krn=HalvingRandomSearchCV(
         random_state=0,
     ).fit(X_train, y_train).best_params_
 
+
 # train
 for i,q in enumerate(tqdm(quantiles)):
-    
+    print(best_hyperparameters_krn)
     # fit data for specific quantile
     qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn, kernel_type=ktype).fit(X_train_scaled, y_train)]
 
