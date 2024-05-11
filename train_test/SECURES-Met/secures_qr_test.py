@@ -23,7 +23,7 @@ from utils import miscellaneous
 
 
 country="CH"
-ktype="matern_0.5"
+ktype="laplacian"
 
 # load train test data
 

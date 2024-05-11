@@ -21,7 +21,7 @@ from kernel_quantile_regression.kqr import KQR
 
 
 country="CH"
-ktype="matern_1.5"
+ktype="laplacian"
 # load train data
 df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/train/df.csv")
 
