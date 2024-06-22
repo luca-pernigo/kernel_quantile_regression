@@ -19,9 +19,7 @@ sys.path.append(project_directory)
 from utils.miscellaneous import order_quantiles
 from utils.miscellaneous import price_plot_ci
 
-import sys
 sys.path.append('src/kernel_quantile_regression/')
-import kqr
 
 
 def test(ith):

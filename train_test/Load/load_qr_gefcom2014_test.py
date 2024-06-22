@@ -20,7 +20,7 @@ sys.path.append(project_directory)
 from utils.miscellaneous import order_quantiles
 from utils.miscellaneous import load_plot_ci
 
-
+sys.path.append('src/kernel_quantile_regression/')
 
 def test(ith):
     df=pd.read_csv(f"Data/Load/Task {ith}/L{ith}-test_clean.csv")
@@ -40,7 +40,7 @@ def test(ith):
 
     pinball_tot=0
 
-    ktype="laplacian"
+    ktype="a_laplacian"
     
     # predict
     df_template_submission=pd.read_csv(f"Data/Load/Task {ith}/L{ith}-benchmark.csv")
