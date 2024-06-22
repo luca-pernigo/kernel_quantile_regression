@@ -7,14 +7,14 @@ import pickle
 from sklearn.preprocessing import StandardScaler
 
 import sys
-
+sys.path.append('src/kernel_quantile_regression/')
 
 from kernel_quantile_regression.kqr import KQR
 # script for plotting saved predictions
 
 # select country
-country="DE"
-country_name="Germany"
+country="CH"
+country_name="Switzerland"
 ktype="a_laplacian"
 ktype_title={"a_laplacian":"Absolute Laplacian", "gaussian_rbf":"Gaussian RBF"}
 
