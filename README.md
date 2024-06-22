@@ -1,5 +1,5 @@
 # Kernel quantile regression
-The kernel_quantile_regression package is an open source implementation of the quantile regressor techique introduced in  [[1]](#1).
+The kernel_quantile_regression package is an open source implementation of the quantile regressor technique introduced in  [[1]](#1).
 
 
 Example of kernel quantile regression on the Melbourne temperature data [[2]](#2).
