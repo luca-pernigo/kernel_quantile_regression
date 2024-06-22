@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kernel_quantile_regression"
-version = "0.0.13"
+version = "0.0.14"
 authors = [
   { name="Luca Pernigo", email="luca.pernigo@usi.ch" },
 ]
