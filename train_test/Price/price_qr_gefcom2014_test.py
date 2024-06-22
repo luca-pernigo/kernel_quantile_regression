@@ -19,11 +19,15 @@ sys.path.append(project_directory)
 from utils.miscellaneous import order_quantiles
 from utils.miscellaneous import price_plot_ci
 
+import sys
+sys.path.append('src/kernel_quantile_regression/')
+import kqr
+
 
 def test(ith):
 
     task_month={4:7,5:7,6:7,7:7,8:7,9:7,10:7,11:7,12:7,13:12,14:12,15:12}
-
+    task_model={4:4,5:4,6:4,7:4,8:4,9:4,10:4,11:4,12:4,13:13,14:13,15:13}
     df=pd.read_csv(f"Data/Price/Task {ith}/Task{ith}_P_test.csv")
 
     X_test=df[["DAY","HOUR","Forecasted Total Load","Forecasted Zonal Load"]]
@@ -42,7 +46,7 @@ def test(ith):
 
     pinball_tot=0
 
-    ktype="laplacian"
+    ktype="gaussian_rbf"
 
     # predict
     df_template_submission=pd.read_csv(f"Data/Price/Task {ith}/Benchmark{ith}_P.csv")
@@ -50,7 +54,7 @@ def test(ith):
     df_predict=df_template_submission[["ZONEID", "timestamp"]].copy()
 
     for i,q in enumerate(quantiles):
-        krn_q=pickle.load(open(f"train_test/Price/{ktype}/task {ith}/krn_qr_{i}.pkl", "rb"))
+        krn_q=pickle.load(open(f"train_test/Price/{ktype}/task {task_model[ith]}/krn_qr_{i}.pkl", "rb"))
         y_predict_q=krn_q.predict(X_test_scaled)
         
         df_predict[f"{q}"]=pd.Series(y_predict_q)
@@ -70,16 +74,19 @@ def test(ith):
         pinball_tot+=pinball_q
 
     # plot
-    # price_plot_ci(reo, y_test)
-    # plt.title(f"Task {ith}, {ktype} kernel")
-    # plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
-    # plt.legend()
-    # plt.show()
+    price_plot_ci(reo, y_test)
+    plt.title(f"Task {ith}, {title_label[ktype]} kernel")
+    plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
+    plt.legend()
+    plt.show()
 
     ans=pinball_tot/len(quantiles)
-    print("total quantile: ", ans)
+    print("total quantile: ", f"{ans:.5f}")
     
     return ans
+
+title_label={"gaussian_rbf": "Gaussian RBF",
+             "a_laplacian": "Absolute Laplacian"}
 
 if __name__=="__main__":
     i=int(sys.argv[1])
