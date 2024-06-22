@@ -47,7 +47,7 @@ def clean_sec_met_train(filepath, country, field, savename):
 
 
 
-def clean_sec_met_test(filepath, country, field, savename):
+def clean_sec_met_test(filepath, country, field, savename,year=2021):
     # script to create data
     df=pd.read_csv(f"{filepath}")
     df.rename(columns={df.columns[0]:"Unnamed: 0"}, inplace=True)
@@ -58,18 +58,24 @@ def clean_sec_met_test(filepath, country, field, savename):
     # datetime
     if field=="Hydro_reservoir" or field=="Hydro_river":
         # repeat 24 times the daily data
-        rep = df[country][-365:].repeat(24)
+        # leap year
+        if year%4==0:
+            rep = df[country][-366:].repeat(24)
+        else:
+            rep = df[country][-365:].repeat(24)
         # new df
         df= pd.DataFrame({country: rep})
         # time info
-        date_range = pd.date_range(start='2021-01-01 00:00', end='2021-12-31 23:00', freq='H')
+        
+        date_range = pd.date_range(start=f'{year}-01-01 00:00', end=f'{year}-12-31 23:00', freq='H')
+        # print(len(date_range))
         df["Time"]=date_range
 
     else:
         df["Time"]=pd.to_datetime(df["Time"], format="%Y-%m-%d-%H")
 
     # 2020
-    df=df[(df["Time"].dt.year>2020) & (df["Time"].dt.year<2022)]
+    df=df[(df["Time"].dt.year>year-1) & (df["Time"].dt.year<year+1)]
     df.reset_index(inplace=True)
 
 
@@ -77,20 +83,20 @@ def clean_sec_met_test(filepath, country, field, savename):
     df=df[["Time", country]]
     df.rename(columns={country:field}, inplace=True)
 
-    df.to_csv(f"Data/SECURES-Met/{country}/clean/test/{savename}.csv", index=False)
+    df.to_csv(f"Data/SECURES-Met/{country}/clean/test/{year}/{savename}.csv", index=False)
 
 
 
 
 
-def clean_load(file, country, train_test):
+def clean_load(file, country, train_test, year):
 
-    df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/{file}.csv")
+    df=pd.read_csv(f"Data/SECURES-Met/{country}/{file}.csv")
 
     df=en_clean_load(df)
     df.reset_index(inplace=True, drop=True)
 
-    df.to_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/{train_test}/load.csv", index=False)
+    df.to_csv(f"Data/SECURES-Met/{country}/clean/{train_test}/{year}/load.csv", index=False)
 
 
 def df_create(dir):
