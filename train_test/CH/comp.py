@@ -10,7 +10,7 @@ from quantile_forest import RandomForestQuantileRegressor as rfr
 from sklearn.ensemble import GradientBoostingRegressor as gbr
 
 from sklearn.experimental import enable_halving_search_cv  # noqa
-from sklearn.model_selection import HalvingRandomSearchCV
+from sklearn.model_selection import HalvingRandomSearchCV, GridSearchCV
 from sklearn.metrics import make_scorer
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_pinball_loss
@@ -27,7 +27,7 @@ if __name__=="__main__":
     
     # script for comparing quantile regressors algorithms
     # select country
-    country="DE"
+    country="CH"
     exp="full"
     
     # quantiles
@@ -39,8 +39,8 @@ if __name__=="__main__":
     pinball_scores=pd.read_csv(f"train_test/{country}/scores_{exp}.csv")
     
     # X y
-    X_train=train[["Temperature","Wind_speed","Day_of_week","Is_holiday"]]
-    X_test=test[["Temperature","Wind_speed","Day_of_week","Is_holiday"]]
+    X_train=train[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
+    X_test=test[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
 
     y_train=train["Load"]
     y_test=test["Load"]
@@ -53,7 +53,7 @@ if __name__=="__main__":
     
 
     # save 
-    [pickle.dump(qr_models[i], open(f"/Users/luca/Desktop/kernel_quantile_regression/train_test/{country}/models_lqr_{exp}/lqr_{i}", "wb")) for i in range(9)]
+    [pickle.dump(qr_models[i], open(f"train_test/{country}/models_lqr_{exp}/lqr_{i}.pkl", "wb")) for i in range(9)]
     
     
     pinball_tot_lqr=0
@@ -63,6 +63,7 @@ if __name__=="__main__":
         pinball_scores.loc[i,"Linear qr"]=mean_pinball_loss(y_test,y_test_pred_qr[i], alpha=q)/np.mean(y_test)
         pinball_tot_lqr+=mean_pinball_loss(y_test,y_test_pred_qr[i], alpha=q)/np.mean(y_test)*1/9
     
+    print("CRPS: ", pinball_tot_lqr)
     pinball_scores.loc[9,"Linear qr"]=pinball_tot_lqr
 
     # define loss to tune
@@ -99,7 +100,7 @@ if __name__=="__main__":
         ).fit(X_train, y_train).best_params_
     
     pinball_tot_gbm_qr=0
-    for i,q in enumerate(tqdm(quantiles)):
+    for i,q in enumerate(quantiles):
 
         # fit data for specific quantile
         qr_gbr_models+=[gbr(loss="quantile", alpha=q, random_state=0,**best_hyperparameters_gbm).fit(X_train, y_train)]
@@ -112,10 +113,11 @@ if __name__=="__main__":
         pinball_scores.loc[i,"Gbm qr"]=mean_pinball_loss(y_test,y_test_pred_qr_gbr[i], alpha=q)/np.mean(y_test)
         pinball_tot_gbm_qr+=mean_pinball_loss(y_test,y_test_pred_qr_gbr[i], alpha=q)/np.mean(y_test)*1/9
     
+    print("CRPS: ", pinball_tot_gbm_qr)
     pinball_scores.loc[9,"Gbm qr"]=pinball_tot_gbm_qr
 
     # save
-    [pickle.dump(qr_gbr_models[i], open(f"/Users/luca/Desktop/kernel_quantile_regression/train_test/{country}/models_gbm_qr_{exp}/gbm_qr_{i}", "wb")) for i in range(9)]
+    [pickle.dump(qr_gbr_models[i], open(f"train_test/{country}/models_gbm_qr_{exp}/gbm_qr_{i}.pkl", "wb")) for i in range(9)]
 
 
     # ranform forest quantile regression
@@ -136,126 +138,133 @@ if __name__=="__main__":
             min_resources=50,
             scoring=neg_mean_pinball_loss_scorer_05,
             n_jobs=2,
-            random_state=0,
-        ).fit(X_train, y_train).best_params_
+            random_state=10,
+        ).fit(X_train.values, y_train.values).best_params_
     
     pinball_tot_qf_rfr=0
-    for i,q in enumerate(tqdm(quantiles)):
+    for i,q in enumerate(quantiles):
 
         # fit data for specific quantile
-        qr_rfr_models+=[rfr(default_quantiles=q, **best_hyperparameters_rff).fit(X_train, y_train)]
+        qr_rfr_models+=[rfr(default_quantiles=q, **best_hyperparameters_rff).fit(X_train.values, y_train.values)]
 
         # list of prediction for each quantile
-        y_test_pred_qr_rfr+=[qr_rfr_models[i].predict(X_test)]
+        y_test_pred_qr_rfr+=[qr_rfr_models[i].predict(X_test.values)]
       
-        print(f"{q}: ", mean_pinball_loss(y_test,qr_rfr_models[i].predict(X_test), alpha=q)/np.mean(y_test))
+        print(f"{q}: ", mean_pinball_loss(y_test,qr_rfr_models[i].predict(X_test.values), alpha=q)/np.mean(y_test))
 
         pinball_scores.loc[i,"Quantile forest"]=mean_pinball_loss(y_test,y_test_pred_qr_rfr[i], alpha=q)/np.mean(y_test)
         pinball_tot_qf_rfr+=mean_pinball_loss(y_test,y_test_pred_qr_rfr[i], alpha=q)/np.mean(y_test)*1/9
     
+    print("CRPS: ", pinball_tot_qf_rfr)
     pinball_scores.loc[9,"Quantile forest"]=pinball_tot_qf_rfr
 
         
     # save
-    [pickle.dump(qr_rfr_models[i], open(f"/Users/luca/Desktop/kernel_quantile_regression/train_test/{country}/models_qf_{exp}/qf_{i}", "wb")) for i in range(9)]
+    [pickle.dump(qr_rfr_models[i], open(f"train_test/{country}/models_qf_{exp}/qf_{i}.pkl", "wb")) for i in range(9)]
 
     # save scores
     pinball_scores.to_csv(f"train_test/{country}/scores_{exp}.csv", index=False)
+
 # CH
 
-# 0.1:  0.042578561510814496
-# 0.2:  0.07460118502033142
-# 0.3:  0.10011636632456154
-# 0.4:  0.1190962110110857
-# 0.5:  0.13095159624360198
-# 0.6:  0.13425750284506457
-# 0.7:  0.12855423773279462
-# 0.8:  0.11201134824429139
-# 0.9:  0.07884352843506973
+# 0.1:  0.035946942609544716
+# 0.2:  0.0616104688625966
+# 0.3:  0.08063685598384654
+# 0.4:  0.09395974649071308
+# 0.5:  0.10223523331817143
+# 0.6:  0.10392969811048319
+# 0.7:  0.09892291027181377
+# 0.8:  0.0852824944425314
+# 0.9:  0.058919221429465415
+# CRPS:  0.0801603968354629
 
 
 # GBM 
-# 0.1:  0.019086831563263656
-# 2:  0.03075895568438049
-# 3:  0.038376501334729106
-# 4:  0.04310644741565326
-# 5:  0.04498542411877865
-# 6:  0.0438668505752885
-# 7:  0.039280318182637816
-# 8:  0.03082919813323486
-# 9:  0.018781257262539017
+# 0.1:  0.01242811307607976
+# 0.2:  0.019936230570722028
+# 0.3:  0.02573120053493338
+# 0.4:  0.02949830323213118
+# 0.5:  0.03174380374863501
+# 0.6:  0.031811499598426725
+# 0.7:  0.03008910007582111
+# 0.8:  0.025701288729266265
+# 0.9:  0.01862263519899499
+# CRPS:  0.02506246386277894
 
 
 # QF 
-# 0.1 0.018799057672365196
-# 0.2 0.030696640559951867
-# 0.3 0.038672643359191204
-# 0.4 0.04345989146587304
-# 0.5 0.044903824661470755
-# 0.6 0.04362922365768885
-# 0.7 0.03916365178854014
-# 0.8 0.031031521618896517
-# 0.9 0.01870107869321539
+# 0.1:  0.014568108959131984
+# 0.2:  0.022766514209163508
+# 0.3:  0.02744529323025672
+# 0.4:  0.030379021415090947
+# 0.5:  0.03118400769403946
+# 0.6:  0.030324031731645416
+# 0.7:  0.02758657080366495
+# 0.8:  0.023524118911529068
+# 0.9:  0.015115323962960807
+# CRPS:  0.024765887879720318
 
-
-# 0.1  &  0.018955529327865296  \\ 
-# 0.2  &  0.03041218559045541  \\ 
-# 0.3  &  0.038140623749173874  \\ 
-# 0.4  &  0.042941513539870114  \\ 
-# 0.5  &  0.04465625762074871  \\ 
-# 0.6  &  0.04347250511620204  \\ 
-# 0.7  &  0.03894392574179358  \\ 
-# 0.8  &  0.030662643640494907  \\ 
-# 0.9  &  0.018412788712590618  \\ 
-
-
+# 0.1  &  0.012097906860201567  \\ 
+# 0.2  &  0.01961847445279765  \\ 
+# 0.3  &  0.024945762466853184  \\ 
+# 0.4  &  0.028533396674224894  \\ 
+# 0.5  &  0.030478723916750956  \\ 
+# 0.6  &  0.031090658437225555  \\ 
+# 0.7  &  0.02958217123128587  \\ 
+# 0.8  &  0.025805227217416106  \\ 
+# 0.9  &  0.018450239815096255  \\ 
+# total quantile loss:  0.024511395674650226
 
 
 
 # DE
 # Linear
-# 0.1:  0.04516866951010013
-# 0.2:  0.08086415307130926
-# 0.3:  0.10820128980640165
-# 0.4:  0.12721878998203479
-# 0.5:  0.1388625272101438
-# 0.6:  0.1418185498659333
-# 0.7:  0.13590791983193012
-# 0.8:  0.11869441875427791
-# 0.9:  0.08458144144296441
+# 0.1:  0.04050873481892131
+# 0.2:  0.0695875235494056
+# 0.3:  0.09068652634480819
+# 0.4:  0.10542751705128771
+# 0.5:  0.11379281126089467
+# 0.6:  0.11543307992065718
+# 0.7:  0.10933982661308293
+# 0.8:  0.0931691012854489
+# 0.9:  0.06318525856272718
+# CRPS:  0.08901448660080373
 
 
 # GBM
-# 0.1:  0.023815800357731932
-# 2:  0.04130666491351428
-# 3:  0.053394973088519794
-# 4:  0.06128472541818242
-# 5:  0.06498273930989444
-# 6:  0.06282424525932778
-# 7:  0.05498423782997457
-# 8:  0.04120346408337301
-# 9:  0.023039934701239367
+# 0.1:  0.026783235550629874
+# 0.2:  0.030202574174767818
+# 0.3:  0.031100926143492604
+# 0.4:  0.030110853067439474
+# 0.5:  0.027819850911379018
+# 0.6:  0.02485400719167576
+# 0.7:  0.02116092868960098
+# 0.8:  0.016504598536059664
+# 0.9:  0.010496230347500291
+# CRPS:  0.024337022734727275
 
 
 
 
 # QF 
-# 0.1 0.028900103953426754
-# 0.2 0.047446415911667636
-# 0.3 0.06130275856650811
-# 0.4 0.07030793572026525
-# 0.5 0.0737134407136041
-# 0.6 0.071293744252726
-# 0.7 0.06226763992674598
-# 0.8 0.04740540958900103
-# 0.9 0.02687381604411017
+# 0.1:  0.016554259985186667
+# 0.2:  0.024168612397068443
+# 0.3:  0.028546426824771064
+# 0.4:  0.030579090503860738
+# 0.5:  0.030875777269190618
+# 0.6:  0.029676940516877123
+# 0.7:  0.02612141958076377
+# 0.8:  0.020986964196431056
+# 0.9:  0.012888690616181517
+# CRPS:  0.024488686876703445
 
-# 0.1  &  0.02766768075186939  \\ 
-# 0.2  &  0.04669594000314759  \\ 
-# 0.3  &  0.059813168136330204  \\ 
-# 0.4  &  0.06833708708610238  \\ 
-# 0.5  &  0.0724663410454275  \\ 
-# 0.6  &  0.07053671769584387  \\ 
-# 0.7  &  0.06215327171738864  \\ 
-# 0.8  &  0.047298247827320124  \\ 
-# 0.9  &  0.026978592995359534  \\ 
+# 0.1  &  0.017736456269952385  \\ 
+# 0.2  &  0.025165632302538318  \\ 
+# 0.3  &  0.02794766181932907  \\ 
+# 0.4  &  0.02881216273211498  \\ 
+# 0.5  &  0.02786590763228558  \\ 
+# 0.6  &  0.02557669030729824  \\ 
+# 0.7  &  0.022080120632472982  \\ 
+# 0.8  &  0.017367587497682996  \\ 
+# 0.9  &  0.01127868757443536  \\ 
+# total quantile loss:  0.02264787852978999
