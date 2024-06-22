@@ -13,7 +13,7 @@ import miscellaneous
 
 
 def create_test(file):
-    df=miscellaneous.clean_time(file, 2011, 2014)
+    df=miscellaneous.clean_time(file, 2011, 2014,0)
 
     df_test=df[-24:]
     # print(df_test)
@@ -30,7 +30,7 @@ def create_test(file):
     
     
     # order columns
-    df_merged=miscellaneous.order_columns(df_merged,["ZONEID","timestamp","MONTH","DAY","HOUR","Forecasted Total Load","Forecasted Zonal Load","Zonal Price"])
+    df_merged=miscellaneous.order_columns(df_merged,["ZONEID","timestamp","MONTH","DAY","HOUR","Forecasted Total Load","Forecasted Zonal Load","Zonal Price","IS_HOLIDAY"])
     # save
     n=miscellaneous.get_task_number(file)
     
