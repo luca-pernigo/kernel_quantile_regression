@@ -21,20 +21,19 @@ sys.path.append(project_directory)
 
 from utils import miscellaneous
 
-
 # load train test data
 train=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
 test=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
 
 
 # X y
-X_train=train[["Temperature","Wind_speed","Day_of_week","Is_holiday"]]
-X_test=test[["Temperature","Wind_speed","Day_of_week","Is_holiday"]]
+X_train=train[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
+X_test=test[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
 
 y_train=train["Load"]
 y_test=test["Load"]
 
-exp="full"
+ktype="a_laplacian"
 quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
 # scale data
@@ -47,7 +46,7 @@ df_predict=pd.DataFrame(columns=[f"{q}" for q in quantiles])
 
 for i,q in enumerate(quantiles):
     # load model
-    krn_q=pickle.load(open(f"train_test/CH/models_{exp}/krn_qr_{q}.pkl", "rb"))
+    krn_q=pickle.load(open(f"train_test/CH/models_{ktype}/krn_qr_{q}.pkl", "rb"))
     # predict
     y_predict_q=krn_q.predict(X_test_scaled)
     print(mean_pinball_loss(y_test,y_predict_q, alpha=q)/np.mean(y_test))
@@ -55,7 +54,7 @@ for i,q in enumerate(quantiles):
     df_predict[f"{q}"]=pd.Series(y_predict_q)
 
 # save predictions to csv
-df_predict.to_csv(f"Data/CH/2022/clean/model_prediction_{exp}.csv", index=False)
+df_predict.to_csv(f"Data/CH/2022/clean/model_prediction_{ktype}.csv", index=False)
 
 
 # compute pinball loss
