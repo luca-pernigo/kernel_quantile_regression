@@ -126,7 +126,7 @@ if __name__=="__main__":
 # print("best hyperparameters: ", best_hyperparameters_krn)
 
 # df_cv_res=pd.DataFrame(cv.cv_results_)
-# df_cv_res.to_csv(f"melbourne/models_{ktype}_gridsearch.csv",index=False)
+# df_cv_res.to_csv(f"train_test/melbourne/models_{ktype}_gridsearch.csv",index=False)
 
 
 plt.plot(X_train,y_train,"o", alpha=0.2)
