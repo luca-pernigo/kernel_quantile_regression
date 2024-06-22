@@ -165,14 +165,14 @@ class KQR(RegressorMixin, BaseEstimator):
         
         # class of kernels functions are closed under addition and product
         elif self.kernel_type=="gaussian_rbf_x_laplacian":
-            kernel=self.var*Product(Matern(length_scale=self.gamma, nu=np.inf), PairwiseKernel(metric='laplacian', gamma=1/self.sigma))
-            return kernel(X,Y)
+            return rbf_kernel(X,Y, gamma=1/self.gamma)* laplacian_kernel(X,Y, gamma=1/self.sigma)
+        
         
         elif self.kernel_type=="se_ard":
             se_ard=1
             for i in range(X.shape[1]-1):
-                squared_exponential=Matern(length_scale=1/self.gammas[i], nu=np.inf)
-                se_ard*=squared_exponential(X[:,(i+1)].reshape(-1,1),Y[:,(i+1)].reshape(-1,1))
+                
+                se_ard*=laplacian_kernel(X[:,(i+1)].reshape(-1,1),Y[:,(i+1)].reshape(-1,1), gamma=1/self.gammas[i])
             return se_ard
 
         elif self.kernel_type=="laplacian_x_periodic":
@@ -183,8 +183,8 @@ class KQR(RegressorMixin, BaseEstimator):
             matern_kernel=self.var*Matern(length_scale=self.gamma, nu=2.5)
             return matern_kernel(X[:,0].reshape(-1,1),Y[:,0].reshape(-1,1))*laplacian_kernel(X[:,0].reshape(-1,1),Y[:,0].reshape(-1,1), gamma=1/self.sigma)
         
-        elif self.kernel_type=="sum_1":
-            prod_2=self.var*Sum(Matern(length_scale=1/self.gammas[i], nu=np.inf), PairwiseKernel(metric='laplacian', gamma=1/self.sigma))
+        elif self.kernel_type=="prod_2":
+            prod_2=self.var*Product(PairwiseKernel(metric='rbf', gamma=1/self.gamma), PairwiseKernel(metric='laplacian', gamma=1/self.sigma))
             return prod_2(X,Y)
 
          # else not implemented
