@@ -47,27 +47,27 @@ ktype="a_laplacian"
 # krn_q=pickle.load(open(f"experiments/train_test/CH/models_{ktype}/krn_qr_0.5.pkl", "rb"))
 # print("best hpprm: ", krn_q.gamma, 1/(m*krn_q.C), krn_q.var)
 
-# param_grid_krn = dict(
-# C=[1/(m*10e-6),1/(m*10e-5),1/(m*10e-4),1/(m*10e-3),1/(m*10e-2),1/(m*10e-1),1/(m*10e-0),1/(m*10e1)],
-# gamma=[2**-6,2**-5,2**-4, 2**-3,2**-2,2**-1,1, 2, 2**2, 2**3,2**4,2**5,2**6]   
-# )
+param_grid_krn = dict(
+C=[1/(m*10e-6),1/(m*10e-5),1/(m*10e-4),1/(m*10e-3),1/(m*10e-2),1/(m*10e-1),1/(m*10e-0),1/(m*10e1)],
+gamma=[2**-6,2**-5,2**-4, 2**-3,2**-2,2**-1,1, 2, 2**2, 2**3,2**4,2**5,2**6]   
+)
 
-# neg_mean_pinball_loss_scorer_05 = make_scorer(
-#     mean_pinball_loss,
-#     alpha=0.5,
-#     greater_is_better=False,
-#     )
-# krn_blueprint=KQR(alpha=0.5)
+neg_mean_pinball_loss_scorer_05 = make_scorer(
+    mean_pinball_loss,
+    alpha=0.5,
+    greater_is_better=False,
+    )
+krn_blueprint=KQR(alpha=0.5)
 
-# # 8.57-
-# cv=GridSearchCV(
-#         krn_blueprint,
-#         param_grid_krn,
-#         scoring=neg_mean_pinball_loss_scorer_05,
-#         n_jobs=-1
-#     ).fit(X_train, y_train)
+# 8.57-
+cv=GridSearchCV(
+        krn_blueprint,
+        param_grid_krn,
+        scoring=neg_mean_pinball_loss_scorer_05,
+        n_jobs=-1
+    ).fit(X_train, y_train)
 
-# best_hyperparameters_krn=cv.best_params_
+best_hyperparameters_krn=cv.best_params_
 
 # train
 for i,q in enumerate(tqdm(quantiles)):
@@ -78,6 +78,6 @@ for i,q in enumerate(tqdm(quantiles)):
     # save models to pickle
     pickle.dump(qr_krn_models[i], open(f'train_test/CH/models_{ktype}/krn_qr_{q}.pkl', 'wb'))
     
-# # cv results
-# df_cv_res=pd.DataFrame(cv.cv_results_)
-# df_cv_res.to_csv(f"experiments/train_test/CH/models_{ktype}/gridsearch.csv",index=False)
+# cv results
+df_cv_res=pd.DataFrame(cv.cv_results_)
+df_cv_res.to_csv(f"train_test/CH/models_{ktype}/gridsearch.csv",index=False)
