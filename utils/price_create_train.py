@@ -15,7 +15,7 @@ def create_train(file):
     df_train=df[0:-24]
 
     # order columns
-    df_train=miscellaneous.order_columns(df_train,["ZONEID","timestamp","MONTH","DAY","HOUR","Forecasted Total Load","Forecasted Zonal Load","Zonal Price"])
+    df_train=miscellaneous.order_columns(df_train,["ZONEID","timestamp","MONTH","DAY","HOUR","Forecasted Total Load","Forecasted Zonal Load","Zonal Price", "IS_HOLIDAY"])
     # save
     n=miscellaneous.get_task_number(file)
     df_train.to_csv(f"Data/Price/Task {n}/Task{n}_P_train.csv", index=False)
