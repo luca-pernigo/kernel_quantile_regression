@@ -208,7 +208,7 @@ def price_plot_ci(df, y):
     
     plt.xticks(ticks=tick_array, rotation=45)
     plt.xlabel("Hours")
-    plt.ylabel("Price (MWh)")
+    plt.ylabel("Price ($/MW)")
 
     plt.legend()
     return None
