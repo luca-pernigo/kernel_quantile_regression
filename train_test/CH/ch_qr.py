@@ -44,9 +44,6 @@ y_test_pred_qr_krn=[]
 
 ktype="a_laplacian"
 
-# krn_q=pickle.load(open(f"experiments/train_test/CH/models_{ktype}/krn_qr_0.5.pkl", "rb"))
-# print("best hpprm: ", krn_q.gamma, 1/(m*krn_q.C), krn_q.var)
-
 param_grid_krn = dict(
 C=[1/(m*10e-6),1/(m*10e-5),1/(m*10e-4),1/(m*10e-3),1/(m*10e-2),1/(m*10e-1),1/(m*10e-0),1/(m*10e1)],
 gamma=[2**-6,2**-5,2**-4, 2**-3,2**-2,2**-1,1, 2, 2**2, 2**3,2**4,2**5,2**6]   
@@ -73,7 +70,7 @@ best_hyperparameters_krn=cv.best_params_
 for i,q in enumerate(tqdm(quantiles)):
     
     # fit data for specific quantile
-    qr_krn_models+=[KQR(alpha=q, gamma=16, C=1/(m*1e-5), kernel_type=ktype).fit(X_train_scaled, y_train)]
+    qr_krn_models+=[KQR(alpha=q, **best_hyperparameters_krn, kernel_type=ktype).fit(X_train_scaled, y_train)]
 
     # save models to pickle
     pickle.dump(qr_krn_models[i], open(f'train_test/CH/models_{ktype}/krn_qr_{q}.pkl', 'wb'))
