@@ -61,7 +61,7 @@ plt.xlabel("Observations")
 plt.title(f"Probabilistic forecast for load in {country_name} (2022)")
 
 # savefig
-plt.savefig(f"plots/{country}/{country}_load_CI.png")
+# plt.savefig(f"plots/{country}/{country}_load_CI.png")
 
 plt.show()
 

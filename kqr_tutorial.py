@@ -70,6 +70,8 @@ if __name__=="__main__":
     plt.title("Linear quantile regression")
     plt.xlabel("Yesterday temperature")
     plt.ylabel("Today temperature")
+    plt.ylim(5, 45)
+    plt.yticks(np.arange(10, 45+1, 5))
     plt.savefig("plots/melbourne_linear_quantile_regression.png")
     plt.show()
     
@@ -173,7 +175,7 @@ if __name__=="__main__":
     # kernel quantile regression
     qr_krn_models=[]
     y_test_pred_qr_krn=[]
-    ktype="laplacian"
+    ktype="gaussian_rbf"
 
     # gamma=[1e-1,1e-2,1,5,10,20]
     # sigma=[1e-1,1e-2,1,5,10,20]
@@ -220,6 +222,10 @@ if __name__=="__main__":
     plt.title("KQR")
     plt.xlabel("Yesterday temperature")
     plt.ylabel("Today temperature")
+
+    plt.ylim(5, 45)
+    plt.yticks(np.arange(10, 45+1, 5))
+
     plt.savefig(f"plots/melborune_{ktype}_kernel_quantile_regression.png")
     plt.show()
 

@@ -70,10 +70,10 @@ def test(ith):
         pinball_tot+=pinball_q
 
     # plot
-    # load_plot_ci(reo, y_test)
-    # plt.title(f"Task {ith}, {ktype} kernel")
+    load_plot_ci(reo, y_test)
+    plt.title(f"Task {ith}, {ktype} kernel")
     # plt.savefig(f"plots/Load/load_task_{ith}_{ktype}.png")
-    # plt.show()
+    plt.show()
 
 
     ans=pinball_tot/len(quantiles)
