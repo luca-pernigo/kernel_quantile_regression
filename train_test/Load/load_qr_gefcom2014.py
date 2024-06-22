@@ -24,8 +24,8 @@ if __name__=="__main__":
     df=pd.read_csv("Data/Load/L-train.csv")
     print("tot_data", len(df))
     # in the load track each task predicts the month=task number -3
-    df=df[df["MONTH"]==(ith-3)][-1400:]
-    print(len(df))
+    df=df[df["MONTH"]==(ith-3)][-2232:]
+    print("month data", len(df))
 
     X_train=df[["DAY",  "HOUR",  "DAY_OF_WEEK",  "IS_HOLIDAY",  "w_avg"]]
     y_train=df["LOAD"]
@@ -63,7 +63,6 @@ if __name__=="__main__":
         ).fit(X_train_scaled, y_train)
     
     best_hyperparameters_krn=cv.best_params_
-    # C=1/(m*10e-4),gamma=8
     
     for i,q in enumerate(tqdm(quantiles)):
         # print(best_hyperparameters_krn)

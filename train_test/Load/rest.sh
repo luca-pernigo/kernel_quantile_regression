@@ -1,4 +1,6 @@
-# python train_test/Load/load_qr_gefcom2014.py 4 "a_laplacian"
+#!/usr/bin/bash
+
+python train_test/Load/load_qr_gefcom2014.py 4 "a_laplacian"
 python train_test/Load/load_qr_gefcom2014.py 4 "gaussian_rbf"
 
 python train_test/Load/load_qr_gefcom2014.py 5 "a_laplacian"
