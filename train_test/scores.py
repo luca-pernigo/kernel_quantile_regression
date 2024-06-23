@@ -6,11 +6,12 @@ from sklearn.metrics import mean_pinball_loss
 # script for storing scores CH DE
 
 quantiles=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
-country="DE"
+country="CH"
 exp="full"
+ktype="a_laplacian"
 
 
-df_pred=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/{country}/2022/clean/model_prediction_{exp}.csv")
+df_pred=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/{country}/2022/clean/model_prediction_{ktype}.csv")
 test=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/{country}/2022/clean/{country.lower()}.csv")
 y_test=test["Load"]
 
