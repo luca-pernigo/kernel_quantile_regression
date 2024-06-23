@@ -21,6 +21,7 @@ from utils.miscellaneous import price_plot_ci
 
 sys.path.append('src/kernel_quantile_regression/')
 
+ktype_title={"a_laplacian":"Absolute Laplacian", "gaussian_rbf":"Gaussian RBF"}
 
 def test(ith):
 
@@ -73,7 +74,7 @@ def test(ith):
 
     # plot
     price_plot_ci(reo, y_test)
-    plt.title(f"Task {ith}, {title_label[ktype]} kernel")
+    plt.title(f"Task {ith}, {ktype_title[ktype]} kernel")
     plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
     plt.legend()
     plt.show()
@@ -83,8 +84,7 @@ def test(ith):
     
     return ans
 
-title_label={"gaussian_rbf": "Gaussian RBF",
-             "a_laplacian": "Absolute Laplacian"}
+
 
 if __name__=="__main__":
     i=int(sys.argv[1])
