@@ -15,20 +15,20 @@ import time
 country="CH"
 ktype="a_laplacian"
 
-
-aaa=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
+# observed data
+hist=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
 
 # load data
 # df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/test/2021/df.csv")
 df=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
 df_len=len(df)
 
-time_window=24*7*1
+time_window=24*4*1
 n_windows=df_len//time_window
 # quantiles
 # quantiles = [i/100 for i in range(1,100)]
-# quantiles = [0.05, 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9, 0.95]
-quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+quantiles = [0.05, 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9, 0.95]
+# quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
 pinball_losses={q:0 for q in quantiles}
 # predict df
@@ -43,14 +43,14 @@ for i in tqdm(range(0,df_len, time_window)):
         j=df_len
         # j=-1
 
-        break
+        # break
     # if z>df_len:
     #     z=df_len
 
     # train
     # create df train
-    df_concat=pd.concat([aaa, df.iloc[0:i,:]], ignore_index=True)
-    df_sub=df_concat.iloc[-2000:,:]
+    df_concat=pd.concat([hist, df.iloc[0:i,:]], ignore_index=True)
+    df_sub=df_concat.iloc[-1000:,:]
 
     # X_train=df[["Direct_irradiation","Global_radiation","Hydro_reservoir","Hydro_river","Temperature","Wind_potential"]].iloc[i:j,:]
     X_train=df_sub[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
@@ -89,4 +89,4 @@ df_predict.to_csv(f"Data/CH/2022/clean/model_prediction_rolling_window_{ktype}.c
 
 df_pinball=pd.DataFrame(data=pinball_losses, index=[1])
 print(df_pinball)
-df_pinball.to_csv(f"Data/CH/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
+# df_pinball.to_csv(f"Data/CH/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
