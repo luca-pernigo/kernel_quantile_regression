@@ -48,7 +48,7 @@ if __name__=="__main__":
             j=df_len
             # j=-1
 
-            break
+            # break
         # if z>df_len:
         #     z=df_len
 
@@ -71,9 +71,9 @@ if __name__=="__main__":
             # fit quantile q
             qr_=qr.QuantReg(y_train, X_train).fit(q=q)
             
-            qr_gbr=gbr(loss="quantile", learning_rate=0.2,alpha=q,  max_depth=2, min_samples_leaf=5, min_samples_split=5,n_estimators=150, random_state=0).fit(X_train, y_train)
+            qr_gbr=gbr(loss="quantile", learning_rate=0.2,alpha=q,   max_depth=10,min_samples_leaf=5, min_samples_split=10,n_estimators=150, random_state=0).fit(X_train, y_train)
             
-            qr_rf=rfr(default_quantiles=q, max_depth=5,min_samples_leaf=20, min_samples_split=30,n_estimators=150).fit(X_train.values, y_train.values)
+            qr_rf=rfr(default_quantiles=q, max_depth=5,min_samples_leaf=10, min_samples_split=10,n_estimators=150).fit(X_train.values, y_train.values)
 
             # predict quantile q
             y_qr_predict_q=qr_.predict(X_test)
