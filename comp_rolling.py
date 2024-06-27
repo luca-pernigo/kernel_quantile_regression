@@ -19,11 +19,11 @@ from tqdm import tqdm
 
 if __name__=="__main__":
     # observed data
-    hist=pd.read_csv(f"Data/DE/2021/clean/ch.csv")
+    hist=pd.read_csv(f"Data/DE/2021/clean/de.csv")
 
     # load data
     # df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/test/2021/df.csv")
-    df=pd.read_csv(f"Data/DE/2022/clean/ch.csv")
+    df=pd.read_csv(f"Data/DE/2022/clean/de.csv")
     df_len=len(df)
     
     time_window=24*1
