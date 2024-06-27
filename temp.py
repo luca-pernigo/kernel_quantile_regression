@@ -23,7 +23,7 @@ hist=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
 df=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
 df_len=len(df)
 
-time_window=24*4*1
+time_window=24*1
 n_windows=df_len//time_window
 # quantiles
 # quantiles = [i/100 for i in range(1,100)]
@@ -50,7 +50,7 @@ for i in tqdm(range(0,df_len, time_window)):
     # train
     # create df train
     df_concat=pd.concat([hist, df.iloc[0:i,:]], ignore_index=True)
-    df_sub=df_concat.iloc[-1000:,:]
+    df_sub=df_concat.iloc[-1500:,:]
 
     # X_train=df[["Direct_irradiation","Global_radiation","Hydro_reservoir","Hydro_river","Temperature","Wind_potential"]].iloc[i:j,:]
     X_train=df_sub[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
@@ -80,6 +80,7 @@ for i in tqdm(range(0,df_len, time_window)):
         
         # time.sleep(5)
 
+pd.set_option('display.max_columns', 11)
 
 df_predict=pd.DataFrame(data=dict_predict)
 # save predictions to csv
@@ -89,4 +90,4 @@ df_predict.to_csv(f"Data/CH/2022/clean/model_prediction_rolling_window_{ktype}.c
 
 df_pinball=pd.DataFrame(data=pinball_losses, index=[1])
 print(df_pinball)
-# df_pinball.to_csv(f"Data/CH/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
+df_pinball.to_csv(f"Data/CH/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
