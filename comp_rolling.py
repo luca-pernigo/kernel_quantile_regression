@@ -19,11 +19,11 @@ from tqdm import tqdm
 
 if __name__=="__main__":
     # observed data
-    hist=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
+    hist=pd.read_csv(f"Data/DE/2021/clean/ch.csv")
 
     # load data
     # df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/test/2021/df.csv")
-    df=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
+    df=pd.read_csv(f"Data/DE/2022/clean/ch.csv")
     df_len=len(df)
     
     time_window=24*1
@@ -90,12 +90,12 @@ pd.set_option('display.max_columns', 11)
 
 qr_df_pinball=pd.DataFrame(data=qr_pinball_losses, index=[1])
 print("Linear",qr_df_pinball)
-qr_df_pinball.to_csv(f"Data/CH/2022/clean/rolling_window/pinball_rolling_window_qr.csv", index=False)
+qr_df_pinball.to_csv(f"Data/DE/2022/clean/rolling_window/pinball_rolling_window_qr.csv", index=False)
 
 gbm_qr_df_pinball=pd.DataFrame(data=gbm_pinball_losses, index=[1])
 print("Gradient boosting machine",gbm_qr_df_pinball)
-gbm_qr_df_pinball.to_csv(f"Data/CH/2022/clean/rolling_window/pinball_rolling_window_gbm_qr.csv", index=False)
+gbm_qr_df_pinball.to_csv(f"Data/DE/2022/clean/rolling_window/pinball_rolling_window_gbm_qr.csv", index=False)
 
 qf_qr_df_pinball=pd.DataFrame(data=qf_pinball_losses, index=[1])
 print("Quantile forest",qf_qr_df_pinball)
-qf_qr_df_pinball.to_csv(f"Data/CH/2022/clean/rolling_window/pinball_rolling_window_qf_qr.csv", index=False)
+qf_qr_df_pinball.to_csv(f"Data/DE/2022/clean/rolling_window/pinball_rolling_window_qf_qr.csv", index=False)

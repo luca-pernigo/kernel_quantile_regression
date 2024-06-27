@@ -12,15 +12,15 @@ from kernel_quantile_regression.kqr import KQR
 
 import time
 
-country="CH"
+country="DE"
 ktype="a_laplacian"
 
 # observed data
-hist=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
+hist=pd.read_csv(f"Data/DE/2021/clean/ch.csv")
 
 # load data
 # df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/test/2021/df.csv")
-df=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
+df=pd.read_csv(f"Data/DE/2022/clean/ch.csv")
 df_len=len(df)
 
 time_window=24*1
@@ -85,9 +85,9 @@ pd.set_option('display.max_columns', 11)
 df_predict=pd.DataFrame(data=dict_predict)
 # save predictions to csv
 # df_predict.to_csv(f"Data/SECURES-Met/{country}/clean/model_prediction_rolling_window_{ktype}.csv", index=False)
-df_predict.to_csv(f"Data/CH/2022/clean/model_prediction_rolling_window_{ktype}.csv", index=False)
+df_predict.to_csv(f"Data/DE/2022/clean/rolling_window/model_prediction_rolling_window_{ktype}.csv", index=False)
 
 
 df_pinball=pd.DataFrame(data=pinball_losses, index=[1])
 print(df_pinball)
-df_pinball.to_csv(f"Data/CH/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
+df_pinball.to_csv(f"Data/DE/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
