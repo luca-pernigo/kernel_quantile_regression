@@ -12,10 +12,26 @@ df_predict=pd.read_csv(f"Data/CH/2022/clean/model_prediction_rolling_window_{kty
 # y_test=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/test/2021/df.csv")["Load"][24*7*1+1:].values
 y_test=pd.read_csv(f"Data/CH/2022/clean/ch.csv")["Load"].values
 
-l=2000
-u=3000
+dates=pd.date_range('2022-01-01', periods=len(df_predict), freq='H')
+dates=pd.Series(dates)
+l=0
+u=len(df_predict)
 plt.figure(figsize=(150,5))
-x=np.linspace(1,u-l+1,u-l)
+x=np.linspace(0,u-l,u-l)
+
+x_position=dates[ (dates.dt.hour==0) & (dates.dt.day==1)].index.values
+
+u_pos = np.absolute(x_position[x_position<=u]-u)
+u_idx=u_pos.argmin()
+
+
+l_pos = np.absolute(x_position[x_position<=l]-l)
+l_idx=l_pos.argmin()
+
+
+months=["Genuary","February","March","April","May","June","July","August","September","October","November","December"]
+# print(l_pos,l_idx,months[:l_idx+1],x_position[:l_idx+1])
+
 plt.plot(x,y_test[l:u], color="black", label="effective")
 
 
@@ -43,6 +59,7 @@ plt.ylabel("Load (MW)")
 plt.legend()
 plt.xlabel("Observations")
 # plt.title(f"Probabilistic forecast for load in {country_name} (2022)")
+plt.xticks(x_position[l_idx:u_idx+1]-l, months[l_idx:u_idx+1])
 plt.show()
 
 print(len(y_test), len(y_predict_05), len(y_predict_95))
