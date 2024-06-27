@@ -69,7 +69,7 @@ for i in tqdm(range(0,df_len, time_window)):
     # fit all quantiles
     for i,q in enumerate(quantiles):
         # fit quantile q
-        krn_q=KQR(alpha=q, gamma=16, C=1/(df_len*1e-5), kernel_type=ktype).fit(X_train_scaled, y_train)
+        krn_q=KQR(alpha=q, gamma=4, C=1/(df_len*1e-5), kernel_type=ktype).fit(X_train_scaled, y_train)
 
         # predict quantile q
         y_predict_q=krn_q.predict(X_test_scaled)
@@ -90,4 +90,4 @@ df_predict.to_csv(f"Data/DE/2022/clean/rolling_window/model_prediction_rolling_w
 
 df_pinball=pd.DataFrame(data=pinball_losses, index=[1])
 print(df_pinball)
-df_pinball.to_csv(f"Data/DE/2022/clean/pinball_rolling_window_{ktype}.csv", index=False)
+df_pinball.to_csv(f"Data/DE/2022/clean/rolling_window/pinball_rolling_window_{ktype}.csv", index=False)
