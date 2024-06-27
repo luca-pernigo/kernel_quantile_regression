@@ -58,7 +58,7 @@ for i,q in enumerate(quantiles):
     df_predict[f"{q}"]=pd.Series(y_predict_q)
 
 # save predictions to csv
-df_predict.to_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/model_prediction_{ktype}.csv", index=False)
+df_predict.to_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/2021/model_prediction_{ktype}.csv", index=False)
 
 
 # compute pinball loss

@@ -33,6 +33,8 @@ X_test=test[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holida
 y_train=train["Load"]
 y_test=test["Load"]
 
+m=len(y_train)
+
 ktype="a_laplacian"
 quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
@@ -47,6 +49,7 @@ df_predict=pd.DataFrame(columns=[f"{q}" for q in quantiles])
 for i,q in enumerate(quantiles):
     # load model
     krn_q=pickle.load(open(f"train_test/CH/models_{ktype}/krn_qr_{q}.pkl", "rb"))
+    # print(krn_q.gamma,1/(krn_q.C*m))
     # predict
     y_predict_q=krn_q.predict(X_test_scaled)
     print(mean_pinball_loss(y_test,y_predict_q, alpha=q)/np.mean(y_test))

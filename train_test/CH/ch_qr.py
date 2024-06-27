@@ -16,7 +16,7 @@ from tqdm import tqdm
 from kernel_quantile_regression.kqr import KQR
 
 # load train data
-df=pd.read_csv(f"Data/CH/2021/clean/ch.csv")
+df=pd.read_csv(f"Data/CH/2022/clean/ch.csv")
 
 # quantiles
 # quantiles = [i/100 for i in range(1,100)]
