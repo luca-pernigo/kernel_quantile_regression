@@ -57,7 +57,7 @@ plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=y_predict_05[l:u]>=y_te
 plt.ylabel("Load (MW)")
 
 plt.legend()
-plt.xlabel("Observations")
+plt.xlabel("Time")
 # plt.title(f"Probabilistic forecast for load in {country_name} (2022)")
 plt.xticks(x_position[l_idx:u_idx+1]-l, months[l_idx:u_idx+1])
 plt.show()
