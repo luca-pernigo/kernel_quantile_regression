@@ -31,6 +31,15 @@ l_idx=l_pos.argmin()
 
 months=["Genuary","February","March","April","May","June","July","August","September","October","November","December"]
 # print(l_pos,l_idx,months[:l_idx+1],x_position[:l_idx+1])
+# print(x_position[l_idx:u_idx+1]-l)
+
+x_position=x_position[l_idx:u_idx+1]-l
+months_position=months[l_idx:u_idx+1]
+
+# if first element is negative drop
+if x_position[0]<0:
+    x_position=x_position[1:]
+    months_position=months_position[1:]
 
 plt.plot(x,y_test[l:u], color="black", label="effective")
 
@@ -41,8 +50,8 @@ plt.plot(x, y_test[l:u], color="black", label="effective")
 y_predict_95=df_predict.loc[:,"0.95"].values
 # plt.plot(y_predict_95, alpha=0.4, color="red")
 
-plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]>=y_test[l:u], alpha=0.4, color="green", edgecolor="black", label="90% Confidence interval")
-plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]<y_test[l:u], alpha=0.4, color="red", edgecolor="black", label="90% Confidence interval")
+plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]>=y_test[l:u], alpha=0.4, color="green", edgecolor="black", label="90% Confidence interval", interpolate=True)
+plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]<y_test[l:u], alpha=0.4, color="red", edgecolor="black", label="90% Confidence interval", interpolate=True)
 
 
 
@@ -51,15 +60,15 @@ plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]<y_test[
 y_predict_05=df_predict.loc[:,"0.05"].values
 
 # plt.plot(y_predict_05, alpha=0.4, color="blue")
-plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=(y_predict_05[l:u]<=y_test[l:u]) & (y_predict_95[l:u]>=y_test[l:u]), alpha=0.4, color="green", edgecolor="black")
-plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=y_predict_05[l:u]>=y_test[l:u], alpha=0.4, color="red", edgecolor="black")
+plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=(y_predict_05[l:u]<=y_test[l:u]) & (y_predict_95[l:u]>=y_test[l:u]), alpha=0.4, color="green", edgecolor="black", interpolate=True)
+plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=y_predict_05[l:u]>=y_test[l:u], alpha=0.4, color="red", edgecolor="black", interpolate=True)
 
 plt.ylabel("Load (MW)")
 
 plt.legend()
 plt.xlabel("Time")
 # plt.title(f"Probabilistic forecast for load in {country_name} (2022)")
-plt.xticks(x_position[l_idx:u_idx+1]-l, months[l_idx:u_idx+1])
+plt.xticks(x_position, months_position)
 plt.show()
 
 print(len(y_test), len(y_predict_05), len(y_predict_95))
