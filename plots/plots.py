@@ -49,14 +49,16 @@ plt.plot(x,y_test[l:u], color="black", label="effective")
 # 95%
 krn_q=pickle.load(open(f"train_test/{country}/models_{ktype}/krn_qr_{0.95}.pkl", "rb"))
 y_predict_95=krn_q.predict(X_test_scaled)
-plt.fill_between(x,y_predict_95[l:u],y_test[l:u], alpha=0.4, color="green", edgecolor="red", label="90% Confidence interval")
+
+plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]>=y_test[l:u], alpha=0.4, color="green", edgecolor="black", label="90% Confidence interval")
+plt.fill_between(x,y_predict_95[l:u],y_test[l:u],where=y_predict_95[l:u]<y_test[l:u], alpha=0.4, color="red", edgecolor="black", label="90% Confidence interval")
 
 # 5%
 krn_q=pickle.load(open(f"train_test/{country}/models_{ktype}/krn_qr_{0.05}.pkl", "rb"))
 y_predict_05=krn_q.predict(X_test_scaled)
 
-plt.fill_between(x,y_test[l:u], y_predict_05[l:u], alpha=0.4, color="green", edgecolor="red")
-plt.ylabel("Load (MW)")
+plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=(y_predict_05[l:u]<=y_test[l:u]) & (y_predict_95[l:u]>=y_test[l:u]), alpha=0.4, color="green", edgecolor="black")
+plt.fill_between(x,y_test[l:u], y_predict_05[l:u], where=y_predict_05[l:u]>=y_test[l:u], alpha=0.4, color="red", edgecolor="black")
 
 plt.legend()
 plt.xlabel("Observations")
