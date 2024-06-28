@@ -12,15 +12,15 @@ from kernel_quantile_regression.kqr import KQR
 
 import time
 
-country="DE"
+country="CH"
 ktype="a_laplacian"
 
 # observed data
-hist=pd.read_csv(f"Data/DE/2021/clean/de.csv")
+hist=pd.read_csv(f"Data/{country}/2021/clean/{country.lower()}.csv")
 
 # load data
 # df=pd.read_csv(f"/Users/luca/Desktop/kernel_quantile_regression/Data/SECURES-Met/{country}/clean/test/2021/df.csv")
-df=pd.read_csv(f"Data/DE/2022/clean/de.csv")
+df=pd.read_csv(f"Data/{country}/2022/clean/{country.lower()}.csv")
 df_len=len(df)
 
 time_window=24*1
@@ -70,7 +70,7 @@ for i in tqdm(range(0,df_len, time_window)):
     # fit all quantiles
     for i,q in enumerate(quantiles):
         # fit quantile q
-        krn_q=pickle.load(open(f"train_test/DE/models_{ktype}/krn_qr_{q}.pkl", "rb"))
+        krn_q=pickle.load(open(f"train_test/{country}/models_{ktype}/krn_qr_{q}.pkl", "rb"))
 
         # predict quantile q
         y_predict_q=krn_q.predict(X_test_scaled)
@@ -86,9 +86,9 @@ pd.set_option('display.max_columns', 11)
 df_predict=pd.DataFrame(data=dict_predict)
 # save predictions to csv
 # df_predict.to_csv(f"Data/SECURES-Met/{country}/clean/model_prediction_rolling_window_{ktype}.csv", index=False)
-df_predict.to_csv(f"Data/DE/2022/clean/rolling_window/model_prediction_rolling_window_{ktype}.csv", index=False)
+df_predict.to_csv(f"Data/{country}/2022/clean/rolling_window/model_prediction_rolling_window_{ktype}.csv", index=False)
 
 
 df_pinball=pd.DataFrame(data=pinball_losses, index=[1])
 print(df_pinball)
-df_pinball.to_csv(f"Data/DE/2022/clean/rolling_window/pinball_rolling_window_{ktype}.csv", index=False)
+df_pinball.to_csv(f"Data/{country}/2022/clean/rolling_window/pinball_rolling_window_{ktype}.csv", index=False)
