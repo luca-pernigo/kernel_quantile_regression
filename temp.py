@@ -35,6 +35,7 @@ pinball_losses={q:0 for q in quantiles}
 df_predict=pd.DataFrame(columns=[f"{q}" for q in quantiles])
 
 dict_predict={q:[] for q in quantiles}
+
 # rolling window
 for i in tqdm(range(0,df_len, time_window)):
     j=i+time_window
@@ -53,8 +54,8 @@ for i in tqdm(range(0,df_len, time_window)):
     df_sub=df_concat.iloc[-1500:,:]
 
     # X_train=df[["Direct_irradiation","Global_radiation","Hydro_reservoir","Hydro_river","Temperature","Wind_potential"]].iloc[i:j,:]
-    X_train=df_sub[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
-    y_train=df_sub["Load"]
+    X_train=hist[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
+    y_train=hist["Load"]
     m=len(y_train)
     
     # test
@@ -69,7 +70,7 @@ for i in tqdm(range(0,df_len, time_window)):
     # fit all quantiles
     for i,q in enumerate(quantiles):
         # fit quantile q
-        krn_q=KQR(alpha=q, gamma=4, C=1/(df_len*1e-5), kernel_type=ktype).fit(X_train_scaled, y_train)
+        krn_q=pickle.load(open(f"train_test/DE/models_{ktype}/krn_qr_{q}.pkl", "rb"))
 
         # predict quantile q
         y_predict_q=krn_q.predict(X_test_scaled)

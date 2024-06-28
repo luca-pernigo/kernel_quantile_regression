@@ -30,8 +30,8 @@ if __name__=="__main__":
     n_windows=df_len//time_window
     # quantiles
     # quantiles = [i/100 for i in range(1,100)]
-    quantiles = [0.05, 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9, 0.95]
-    # quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+    # quantiles = [0.05, 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9, 0.95]
+    quantiles = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
     qr_pinball_losses={q:0 for q in quantiles}
     gbm_pinball_losses={q:0 for q in quantiles}
@@ -58,8 +58,8 @@ if __name__=="__main__":
         df_sub=df_concat.iloc[-1500:,:]
 
         # X_train=df[["Direct_irradiation","Global_radiation","Hydro_reservoir","Hydro_river","Temperature","Wind_potential"]].iloc[i:j,:]
-        X_train=df_sub[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
-        y_train=df_sub["Load"]
+        X_train=hist[["Temperature","Wind_speed", "Hour","Day_of_week","Month","Is_holiday"]]
+        y_train=hist["Load"]
         m=len(y_train)
         
         # test
@@ -69,11 +69,14 @@ if __name__=="__main__":
         # fit all quantiles
         for i,q in enumerate(quantiles):
             # fit quantile q
-            qr_=qr.QuantReg(y_train, X_train).fit(q=q)
+            # qr_=qr.QuantReg(y_train, X_train).fit(q=q)
+            qr_=pickle.load(open(f"train_test/DE/models_lqr_full/lqr_{int(q*10-1)}.pkl", "rb"))
             
-            qr_gbr=gbr(loss="quantile", learning_rate=0.2,alpha=q,   max_depth=10,min_samples_leaf=5, min_samples_split=10,n_estimators=150, random_state=0).fit(X_train, y_train)
+            # qr_gbr=gbr(loss="quantile", learning_rate=0.2,alpha=q,   max_depth=10,min_samples_leaf=5, min_samples_split=10,n_estimators=150, random_state=0).fit(X_train, y_train)
+            qr_gbr=pickle.load(open(f"train_test/DE/models_gbm_qr_full/gbm_qr_{int(q*10-1)}.pkl", "rb"))
             
-            qr_rf=rfr(default_quantiles=q, max_depth=5,min_samples_leaf=10, min_samples_split=10,n_estimators=150).fit(X_train.values, y_train.values)
+            # qr_rf=rfr(default_quantiles=q, max_depth=5,min_samples_leaf=10, min_samples_split=10,n_estimators=150).fit(X_train.values, y_train.values)
+            qr_rf=pickle.load(open(f"train_test/DE/models_qf_full/qf_{int(q*10-1)}.pkl", "rb"))
 
             # predict quantile q
             y_qr_predict_q=qr_.predict(X_test)
