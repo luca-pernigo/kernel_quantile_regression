@@ -76,7 +76,6 @@ def test(ith):
     price_plot_ci(reo, y_test)
     plt.title(f"Task {ith}, {ktype_title[ktype]} kernel")
     plt.savefig(f"plots/Price/price_task_{ith}_{ktype}.png")
-    plt.legend()
     plt.show()
 
     ans=pinball_tot/len(quantiles)

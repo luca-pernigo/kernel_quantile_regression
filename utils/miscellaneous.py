@@ -4,6 +4,8 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cm
+from matplotlib.lines import Line2D
+import matplotlib.patches as mpatches
 
 import numpy as np
 
@@ -176,16 +178,27 @@ def load_plot_ci(df, y):
     
     plt.figure(figsize=(15,5))
     # plot quantile range
-    plt.plot(y,color="black", label="effective")
+    plt.plot(y,color="black")
     
-    plt.fill_between(x,y_predict_5,y, alpha=0.4, color="green", edgecolor="red")
-    plt.fill_between(x,y,y_predict_95, alpha=0.4, color="green", edgecolor="red", label="90% Confidence interval")
+    plt.fill_between(x,y_predict_95, y_predict_5, alpha=0.4, color="green", edgecolor="black", interpolate=True)
+    plt.fill_between(x,y_predict_95,y,where=y_predict_95<y, alpha=0.4, color="red", edgecolor="black", interpolate=True)
+    plt.fill_between(x,y, y_predict_5, where=y_predict_5>=y, alpha=0.4, color="red", edgecolor="black",interpolate=True)
     
     plt.xticks(ticks=tick_array, labels=labels, rotation=45)
     plt.xlabel("Days")
     plt.ylabel("Load (MW)")
 
-    plt.legend()
+    # handles for legend
+    handles, labels = plt.gca().get_legend_handles_labels()
+    # create manual symbols for legend
+    patch1 = mpatches.Patch(color='green', label='90% Confidence interval',alpha=0.4)   
+    patch2 = mpatches.Patch(color='red', label='Prediction out of confidence interval',alpha=0.4)   
+    line = Line2D([0],[0],label="effective", color='black')
+
+    # add manual symbols to auto legend
+    handles.extend([line, patch1,patch2])
+
+    plt.legend(handles=handles)
     return None
 
 
@@ -201,14 +214,25 @@ def price_plot_ci(df, y):
     tick_array = [i for i in range(0,23+1)]
     
     # plot quantile range
-    plt.plot(y,color="black", label="effective")
-    
-    plt.fill_between(x,y_predict_5,y, alpha=0.4, color="green", edgecolor="red")
-    plt.fill_between(x,y,y_predict_95, alpha=0.4, color="green", edgecolor="red", label="90% Confidence interval")
+    plt.plot(y,color="black")
+
+    plt.fill_between(x,y_predict_95, y_predict_5, alpha=0.4, color="green", edgecolor="black", interpolate=True)
+    plt.fill_between(x,y_predict_95,y,where=y_predict_95<y, alpha=0.4, color="red", edgecolor="black", interpolate=True)
+    plt.fill_between(x,y, y_predict_5, where=y_predict_5>=y, alpha=0.4, color="red", edgecolor="black",interpolate=True)
     
     plt.xticks(ticks=tick_array, rotation=45)
     plt.xlabel("Hours")
     plt.ylabel("Price ($/MW)")
 
-    plt.legend()
+    # handles for legend
+    handles, labels = plt.gca().get_legend_handles_labels()
+    # create manual symbols for legend
+    patch1 = mpatches.Patch(color='green', label='90% Confidence interval',alpha=0.4)   
+    patch2 = mpatches.Patch(color='red', label='Prediction out of confidence interval',alpha=0.4)   
+    line = Line2D([0],[0],label="effective", color='black')
+
+    # add manual symbols to auto legend
+    handles.extend([line, patch1,patch2])
+
+    plt.legend(handles=handles)
     return None

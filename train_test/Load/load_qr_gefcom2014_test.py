@@ -42,7 +42,7 @@ def test(ith):
 
     pinball_tot=0
 
-    ktype="gaussian_rbf"
+    ktype="a_laplacian"
     
     # predict
     df_template_submission=pd.read_csv(f"Data/Load/Task {ith}/L{ith}-benchmark.csv")
