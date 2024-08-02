@@ -62,7 +62,7 @@ def plot_ci(y_test,y_predict_95,y_predict_05,df_pred,u,l,country_name,year):
     # plt.legend()
     plt.xlabel("Time")
     plt.ylabel("Load (MW)")
-    plt.title(f"Probabilistic forecast for load in {country_name} (2022)")
+    plt.title(f"Probabilistic forecast for load in {country_name} ({year})")
     plt.xticks(x_position, months_position)
 
     # make plot margins tight enough
