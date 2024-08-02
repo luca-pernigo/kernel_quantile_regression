@@ -2,4 +2,4 @@
 
 python comp_rolling.py
 
-python temp.py
+python kernel_rolling.py
